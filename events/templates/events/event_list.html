@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<!-- Hero Section -->
+<section class="bg-gray-100 py-8">
+    <div class="container mx-auto text-center px-4">
+        <h1 class="text-4xl md:text-5xl font-bold text-teal-600">Find Your Next Adventure</h1>
+        <p class="text-gray-700 mt-2 text-sm md:text-base">Explore, join, and create amazing events with ease!</p>
+    </div>
+</section>
+
+<!-- Event Search -->
+<form method="GET" action="{% url 'event_list' %}" class="mb-4 flex items-center gap-2">
+    <input type="text" name="q" value="{{ request.GET.q }}" class="p-2 border rounded-lg w-1/2" placeholder="Search events by name or location">
+    <select name="category" class="p-2 border rounded-lg">
+        <option value="">All Categories</option>
+        {% for category in categories %}
+        <option value="{{ category.id }}" {% if category.id == request.GET.category %}selected{% endif %}>{{ category.name }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit" class="bg-teal-500 text-white px-4 py-2 rounded-lg">Filter</button>
+</form>
+
+
+<!-- Event List -->
+<section class="py-8 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <h2 class="text-2xl font-bold text-gray-700 mb-6">All Events</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for event in events %}
+            <div class="event-card bg-white shadow-lg rounded-lg overflow-hidden">
+                <!-- Event Image -->
+                {% if event.event_image %}
+                    <img src="{{ event.event_image.url }}" alt="{{ event.name }}" class="w-full h-40 object-cover">
+                {% else %}
+                    <div class="w-full h-40 bg-gray-300 flex items-center justify-center text-gray-500 italic">
+                        No Image Available
+                    </div>
+                {% endif %}
+
+                <div class="p-4">
+                    <!-- Event Title -->
+                    <h3 class="text-xl font-semibold text-teal-600 truncate">{{ event.name }}</h3>
+                    <!-- Event Location -->
+                    <p class="text-gray-700 mt-2"><strong>Location:</strong> {{ event.location }}</p>
+                    <!-- Event Participants -->
+                    <p class="text-gray-700"><strong>Participants:</strong> {{ event.participant_set.count }}</p>
+                    <!-- View Details -->
+                    <a 
+                        href="{% url 'event_detail' event.id %}" 
+                        target="_blank" 
+                        class="text-teal-500 hover:underline mt-4 block">
+                        View Details
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

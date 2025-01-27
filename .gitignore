@@ -1,0 +1,67 @@
+# Python bytecode files
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+
+# Django-specific
+*.log
+*.pot
+*.pyc
+*.sqlite3
+db.sqlite3
+media/
+staticfiles/
+*.bak
+*.swp
+
+# VSCode settings
+.vscode/
+
+# PyCharm settings
+.idea/
+
+# Migrations
+*/migrations/*
+*.mo
+
+# Environment variables
+.env
+.env.*
+
+# Virtual Environment
+myenv/
+.env/
+
+# Coverage reports
+.coverage
+.coverage.*
+nosetests.xml
+coverage.xml
+*.cover
+
+# mypy
+.mypy_cache/
+
+# Flask / Jupyter Notebooks / IPython
+.ipython/
+jupyter_notebooks/
+
+# Django database settings (optional if you're using a production database)
+config/settings.py
+config/settings.pyc
+
+# Build directories
+build/
+dist/
+*.egg-info/
+
+# Docker
+docker-compose.override.yml
+Dockerfile
+
+# Testing tools / logs
+test_reports/
+
+# Pytest
+pytest_cache/

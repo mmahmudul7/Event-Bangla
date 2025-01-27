@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1 class="text-3xl font-bold mb-6">Update Event</h1>
+    <div class="bg-white p-6 shadow rounded-lg">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% if form.instance.image %}
+                <img src="{{ form.instance.image.url }}" alt="Current Event Image" class="mb-4">
+            {% endif %}
+            {{ form.as_p }}
+            <button type="submit" class="px-4 py-2 bg-teal-500 text-white rounded">Update Event</button>
+        </form>
+    </div>
+{% endblock %}

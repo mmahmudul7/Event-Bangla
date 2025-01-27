@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Bangla</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+    <header>
+        <!-- Navbar -->
+        <nav class="bg-teal-500 text-white p-4">
+            <div class="container mx-auto flex justify-between items-center">
+                <!-- Logo -->
+                <a href="#" class="text-xl font-bold">Event Bangla</a>
+                <!-- Mobile Menu Button -->
+                <button id="menu-btn" class="lg:hidden block text-white focus:outline-none">
+                    ☰
+                </button>
+                <!-- Navbar Links -->
+                <ul id="menu" class="hidden lg:flex space-x-4 items-center">
+                    <li><a href="{% url 'dashboard' %}" class="hover:underline">Dashboard</a></li>
+                    <li><a href="{% url 'event_list' %}" class="hover:underline">All Events</a></li>
+                    <li><a href="{% url 'event_create' %}?next={{ request.path }}" class="bg-teal-500 text-white p-2 rounded">
+                        Create Event
+                    </a></li>
+                    <li><a href="{% url 'contact' %}" class="hover:underline">Contact</a></li>
+                </ul>
+                <!-- Login Button -->
+                <a href="/admin" class="bg-gray-100 text-teal-500 px-4 py-2 rounded-lg hover:bg-white">Login</a>
+            </div>
+            <!-- Mobile Menu -->
+            <ul id="mobile-menu" class="lg:hidden hidden flex-col mt-4 space-y-2 bg-teal-600 p-4">
+                <li><a href="{% url 'dashboard' %}" class="hover:underline">Dashboard</a></li>
+                <li><a href="{% url 'event_list' %}" class="hover:underline block">All Events</a></li>
+                <li><a href="{% url 'event_create' %}?next={{ request.path }}" class="bg-teal-500 text-white p-2 rounded">
+                    Create Event
+                </a></li>
+                <li><a href="{% url 'contact' %}" class="hover:underline">Contact</a></li>
+                <li><a href="/admin" class="bg-gray-100 text-teal-500 px-4 py-2 rounded-lg hover:bg-white block text-center">Login</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container mx-auto py-6">
+        {% block content %}
+        <!-- Content will be inserted here from child templates -->
+        {% endblock %}
+    </div>
+
+    <footer class="bg-teal-500 text-white text-center p-4">
+        <p>&copy; 2025 Event Bangla. All rights reserved.</p>
+    </footer>
+
+    <!-- JavaScript for Responsive Menu -->
+    <script>
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+    </script>
+</body>
+</html>

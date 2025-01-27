@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mx-auto p-6 bg-white shadow-md rounded-lg">
+    <h1 class="text-4xl font-bold text-teal-600 mb-6">Participants List</h1>
+    
+    <ul>
+        {% for participant in participants %}
+            <li class="bg-white p-4 mb-4 rounded shadow hover:shadow-lg transition">
+                <p class="text-gray-800">{{ participant.name }} - {{ participant.email }}</p>
+            </li>
+        {% empty %}
+            <p class="text-gray-500">No participants found.</p>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
