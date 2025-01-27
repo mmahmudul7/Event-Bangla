@@ -42,7 +42,7 @@ coverage.xml
 
 # mypy
 .mypy_cache/
-
+commands/
 # Flask / Jupyter Notebooks / IPython
 .ipython/
 jupyter_notebooks/

@@ -45,7 +45,7 @@
                     <!-- Event Location -->
                     <p class="text-gray-700 mt-2"><strong>Location:</strong> {{ event.location }}</p>
                     <!-- Event Participants -->
-                    <p class="text-gray-700"><strong>Participants:</strong> {{ event.participant_set.count }}</p>
+                    <p class="text-gray-700"><strong>Participants:</strong> {{ event.participants.count }}</p>
                     <!-- View Details -->
                     <a 
                         href="{% url 'event_detail' event.id %}" 
