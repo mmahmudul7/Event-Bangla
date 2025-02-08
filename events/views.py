@@ -37,7 +37,7 @@ def event_list(request):
     }
     return render(request, 'events/event_list.html', context)
 
-# @login_required
+@login_required
 def event_detail(request, id):
     event = get_object_or_404(Event, id=id)
     return render(request, 'events/event_detail.html', {'event': event})
