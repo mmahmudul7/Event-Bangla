@@ -10,7 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 
 # Event List view
-@login_required
+# @login_required
 def event_list(request):
     start_date = request.GET.get('start_date')
     end_date = request.GET.get('end_date')
@@ -37,7 +37,7 @@ def event_list(request):
     }
     return render(request, 'events/event_list.html', context)
 
-@login_required
+# @login_required
 def event_detail(request, id):
     event = get_object_or_404(Event, id=id)
     return render(request, 'events/event_detail.html', {'event': event})
@@ -143,7 +143,7 @@ def dashboard(request):
     }
     return render(request, 'events/dashboard.html', context)
 
-@login_required
+# @login_required
 def contact_page(request):
     if request.method == "POST":
         name = request.POST.get('name')
