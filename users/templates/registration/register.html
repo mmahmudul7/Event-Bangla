@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-    <div class="mx-auto w-1/2 my-9">
+    <div class="mx-auto w-1/4 my-9">
         {% if form.non_field_errors %}
             {% for error in form.non_field_errors %}
                 {{ error }}
@@ -22,7 +22,7 @@
                     {% endif %}
                </p>
             {% endfor %}
-            <button type="submit" class='bg-blue-500 px-2 py-1 rounded text-white mt-3'>Sign Up</button>
+            <button type="submit" class='bg-teal-500 px-2 py-1 rounded text-white mt-3 hover:bg-teal-600 transition duration-300'>Sign Up</button>
         </form>
     </div>
 {% endblock content %}

@@ -1,7 +1,8 @@
 from django import forms
-from .models import Event, Category
+from events.models import Event, Category
+from users.forms import StyledFormMixin
 
-class EventForm(forms.ModelForm):
+class EventForm(StyledFormMixin, forms.ModelForm):
     class Meta:
         model = Event
         fields = ['name', 'description', 'date', 'time', 'location', 'category', 'event_image']
