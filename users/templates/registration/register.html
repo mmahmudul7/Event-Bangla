@@ -1,17 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <form action="" method="POST">
-        {% csrf_token %}
+{% extends "base.html" %}
+{% block content %}
+    <div class="mx-auto w-1/2 my-9">
+        {% if form.non_field_errors %}
+            {% for error in form.non_field_errors %}
+                {{ error }}
+            {% endfor %}
+        {% endif %}
+        <form action="" method="POST">
+            {% csrf_token %}
+            {% for field in form %}
+               <p>
+                    <label for="{{ field.id_for_label }}"> {{field.label}} </label>
+                    {{ field }}
 
-        {{ form.as_p }}
-
-        <button type="submit">Sign Up</button>
-    </form>
-</body>
-</html>
+                    {% if field.errors %}
+                            <ul>
+                                {% for error in field.errors %}
+                                <li>{{error}}</li>
+                                {% endfor %}
+                            </ul>
+                    {% endif %}
+               </p>
+            {% endfor %}
+            <button type="submit" class='bg-blue-500 px-2 py-1 rounded text-white mt-3'>Sign Up</button>
+        </form>
+    </div>
+{% endblock content %}
