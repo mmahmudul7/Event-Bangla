@@ -37,3 +37,10 @@ class Event(models.Model):
 
     def __str__(self):
         return self.name
+
+    def add_rsvp(self, user):
+        """A user cannot RSVP twice."""
+        if not self.participants.filter(id=user.id).exists():
+            self.participants.add(user)
+            return True
+        return False
