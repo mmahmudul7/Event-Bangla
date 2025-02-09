@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mx-auto p-4">
+
+    <!-- Stats Cards -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <a 
+            href="{% url 'participant_list' %}" 
+            class="block bg-white p-6 rounded-lg shadow hover:shadow-lg transition cursor-pointer">
+            <h3 class="text-gray-700 text-lg font-semibold">Total Participants</h3>
+            <p class="text-3xl font-bold text-teal-600">{{ total_participants }}</p>
+        </a>
+        <a 
+            href="?filter=total_events" 
+            class="block bg-white p-6 rounded-lg shadow hover:shadow-lg transition cursor-pointer">
+            <h3 class="text-gray-700 text-lg font-semibold">Total Events</h3>
+            <p class="text-3xl font-bold text-teal-600">{{ total_events }}</p>
+        </a>
+        <a 
+            href="?filter=upcoming_events" 
+            class="block bg-white p-6 rounded-lg shadow hover:shadow-lg transition cursor-pointer">
+            <h3 class="text-gray-700 text-lg font-semibold">Upcoming Events</h3>
+            <p class="text-3xl font-bold text-teal-600">{{ total_upcoming_events }}</p>
+        </a>
+        <a 
+            href="?filter=past_events" 
+            class="block bg-white p-6 rounded-lg shadow hover:shadow-lg transition cursor-pointer">
+            <h3 class="text-gray-700 text-lg font-semibold">Past Events</h3>
+            <p class="text-3xl font-bold text-teal-600">{{ total_past_events }}</p>
+        </a>
+    </section>
+
+    <h2>My RSVP Events</h2>
+    <ul>
+        {% for event in rsvp_events %}
+            <li>{{ event.name }} - {{ event.date }}</li>
+        {% empty %}
+            <li>You have not RSVP'd for any events yet.</li>
+        {% endfor %}
+    </ul>
+
+    <!-- Events List -->
+    <section>
+        <h2 class="text-xl font-bold text-gray-700 mb-4">All Events</h2>
+        
+        <!-- Categories -->
+        <div class="flex flex-wrap gap-2 mb-4">
+            {% for category in categories %}
+                <a href="?category={{ category.name }}" class="px-4 py-2 bg-teal-500 text-white rounded hover:bg-teal-600">
+                    {{ category.name }}
+                </a>
+            {% endfor %}
+        </div>
+        
+        <!-- Date Range Filter -->
+        <form method="get" action="" class="mb-4 flex gap-2">
+            <input type="date" name="start_date" class="px-4 py-2 border rounded" value="{{ start_date }}">
+            <input type="date" name="end_date" class="px-4 py-2 border rounded" value="{{ end_date }}">
+            <button type="submit" class="px-4 py-2 bg-teal-500 text-white rounded hover:bg-teal-600">Filter</button>
+        </form>
+    </section>
+
+    <!-- Filtered Events -->
+    <section class="mb-8">
+        <h2 class="text-2xl font-semibold text-teal-600 mb-4">{{ filter_title }}</h2>
+        <ul>
+            {% for event in filtered_events %}
+                <li class="bg-white p-4 mb-4 rounded shadow hover:shadow-lg transition">
+                    <div class="flex justify-between items-center">
+                        <!-- event details -->
+                        <div>
+                            <a href="{% url 'event_detail' event.id %}" class="text-teal-600 font-bold hover:underline">
+                                <img src="{{ event.image.url }}" alt="{{ event.name }}" class="h-30 object-cover rounded-md mb-2">
+                                {{ event.name }}
+                            </a>
+                            <p class="text-gray-600">{{ event.location }} | {{ event.time }}</p>
+                        </div>
+                    </div>
+                </li>
+            {% empty %}
+                <p class="text-gray-500">No events found for the selected filter.</p>
+            {% endfor %}
+        </ul>
+    </section>
+</div>
+{% endblock content %}

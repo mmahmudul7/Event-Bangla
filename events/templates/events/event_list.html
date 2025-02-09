@@ -11,15 +11,15 @@
 </section>
 
 <!-- Event Search -->
-<form method="GET" action="{% url 'event_list' %}" class="mb-4 flex items-center gap-2">
-    <input type="text" name="q" value="{{ request.GET.q }}" class="p-2 border rounded-lg w-1/2" placeholder="Search events by name or location">
-    <select name="category" class="p-2 border rounded-lg">
+<form method="GET" action="{% url 'event_list' %}" class="mb-4 flex-col md:flex-row items-center gap-2">
+    <input type="text" name="q" value="{{ request.GET.q }}" class="p-2 border rounded-lg w-full md:w-1/2" placeholder="Search events by name or location">
+    <select name="category" class="p-2 border rounded-lg w-full md:w-auto">
         <option value="">All Categories</option>
         {% for category in categories %}
-        <option value="{{ category.id }}" {% if category.id == request.GET.category %}selected{% endif %}>{{ category.name }}</option>
+        <option value="{{ category.id }}" {% if category.id|stringformat:"s" == request.GET.category %}selected{% endif %}>{{ category.name }}</option>
         {% endfor %}
     </select>
-    <button type="submit" class="bg-teal-500 text-white px-4 py-2 rounded-lg">Filter</button>
+    <button type="submit" class="bg-teal-500 text-white px-4 py-2 rounded-lg w-full md:w-auto">Filter</button>
 </form>
 
 
@@ -38,22 +38,44 @@
                         No Image Available
                     </div>
                 {% endif %}
-
+               
                 <div class="p-4">
                     <!-- Event Title -->
                     <h3 class="text-xl font-semibold text-teal-600 truncate">{{ event.name }}</h3>
                     <!-- Event Location -->
                     <p class="text-gray-700 mt-2"><strong>Location:</strong> {{ event.location }}</p>
+                    <p class="text-gray-600"><strong>Date:</strong> {{ event.date }} | <strong>Time:</strong> {{ event.time }}</p>
+                    {% comment %} <p class="mt-2">{{ event.description }}</p> {% endcomment %}
                     <!-- Event Participants -->
                     <p class="text-gray-700"><strong>Participants:</strong> {{ event.participants.count }}</p>
                     <!-- View Details -->
                     <a 
                         href="{% url 'event_detail' event.id %}" 
                         target="_blank" 
-                        class="text-teal-500 hover:underline mt-4 block">
+                        class="text-teal-500 hover:underline my-4 block">
                         View Details
                     </a>
+
+                    <!-- RSVP Button -->
+                    <div class="flex justify-between items-center mt-4">
+                        {% if user.is_authenticated %}
+                            {% if user in event.participants.all %}
+                                <button class="bg-gray-300 text-white px-4 py-2 rounded cursor-not-allowed" disabled>
+                                    RSVP Done
+                                </button>
+                            {% else %}
+                                <a href="{% url 'event_rsvp' event.id %}" class="bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700 transition">
+                                    RSVP Now
+                                </a>
+                            {% endif %}
+                        {% else %}
+                            <a href="{% url 'sign-in' %}" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition">
+                                Login to RSVP!
+                            </a>
+                        {% endif %}
+                    </div>
                 </div>
+
             </div>
             {% endfor %}
         </div>

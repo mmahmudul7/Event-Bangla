@@ -19,15 +19,19 @@
                 </button>
                 <!-- Navbar Links -->
                 <ul id="menu" class="hidden lg:flex space-x-4 items-center">
-                    <li><a href="{% url 'dashboard' %}" class="hover:underline">Dashboard</a></li>
                     <li><a href="{% url 'event_list' %}" class="hover:underline">All Events</a></li>
-                    <li><a href="{% url 'event_create' %}?next={{ request.path }}" class="bg-teal-500 text-white p-2 rounded">
-                        Create Event
-                    </a></li>
+                    <li><a href="{% url 'event_create' %}?next={{ request.path }}" class="bg-teal-500 text-white p-2 rounded">Create Event</a></li>
                     <li><a href="{% url 'contact' %}" class="hover:underline">Contact</a></li>
-                    <!-- Login Button -->
-                    <li><a href="/admin" class="bg-gray-100 text-teal-500 px-4 py-2 rounded-lg hover:bg-white">Login</a></li>
-                </ul>                
+
+                    {% if user.is_authenticated %}
+                        <li><a href="{% url 'dashboard' %}" class="hover:underline">Dashboard</a></li>
+                        <li><a href="{% url 'sign-out' %}" class="bg-gray-100 text-teal-500 px-4 py-2 rounded-lg hover:bg-white">Logout</a></li>
+                    {% else %}
+                        <li><a href="{% url 'sign-in' %}" class="bg-gray-100 text-teal-500 px-4 py-2 rounded-lg hover:bg-white">Login</a></li>
+                        <li><a href="{% url 'sign-up' %}" class="bg-blue-950 text-white px-4 py-2 rounded-lg hover:bg-blue-900">Sign Up</a></li>
+                    {% endif %}
+                </ul>
+
             </div>
             <!-- Mobile Menu -->
             <ul id="mobile-menu" class="lg:hidden hidden flex-col mt-4 space-y-2 bg-teal-600 p-4">
@@ -37,12 +41,28 @@
                     Create Event
                 </a></li>
                 <li><a href="{% url 'contact' %}" class="hover:underline">Contact</a></li>
-                <li><a href="/admin" class="bg-gray-100 text-teal-500 px-4 py-2 rounded-lg hover:bg-white block text-center">Login</a></li>
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'dashboard' %}" class="hover:underline">Dashboard</a></li>
+                    <li><a href="{% url 'sign-out' %}" class="bg-gray-100 text-teal-500 px-4 py-2 rounded-lg hover:bg-white">Logout</a></li>
+                {% else %}
+                    <li><a href="{% url 'sign-in' %}" class="bg-gray-100 text-teal-500 px-4 py-2 rounded-lg hover:bg-white">Login</a></li>
+                    <li><a href="{% url 'sign-up' %}" class="bg-blue-950 text-white px-4 py-2 rounded-lg hover:bg-blue-900">Sign Up</a></li>
+                {% endif %}
             </ul>
         </nav>
     </header>
 
     <div class="container mx-auto py-6">
+        {% if messages %}
+            <div class="p-4">
+                {% for message in messages %}
+                    <div class="bg-green-500 text-white p-3 rounded-md">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
         {% block content %}
         <!-- Content will be inserted here from child templates -->
         {% endblock %}

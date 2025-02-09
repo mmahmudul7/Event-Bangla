@@ -2,17 +2,20 @@ from django.urls import path
 from events import views
 from django.conf import settings
 from django.conf.urls.static import static
+from events.views import event_list, event_detail, event_create, event_update, event_delete, event_rsvp, participant_list, contact_page, organizer_dashboard, participant_dashboard
+
 
 urlpatterns = [
-    path('', views.event_list, name='event_list'),  # Event list page
-    path('events/<int:id>/', views.event_detail, name='event_detail'),
-    path('events/create/', views.event_create, name='event_create'),
-    path('events/<int:id>/update/', views.event_update, name='event_update'),
-    path('events/<int:id>/delete/', views.event_delete, name='event_delete'),
-    path('events/<int:id>/rsvp/', views.event_rsvp, name='event_rsvp'),
-    path('dashboard/', views.dashboard, name='dashboard'),
-    path('participants/', views.participant_list, name='participant_list'),
-    path('contact/', views.contact_page, name='contact'),
+    path('', event_list, name='event_list'),  # Event list page
+    path('events/<int:id>/', event_detail, name='event_detail'),
+    path('events/create/', event_create, name='event_create'),
+    path('events/<int:id>/update/', event_update, name='event_update'),
+    path('events/<int:id>/delete/', event_delete, name='event_delete'),
+    path('events/<int:id>/rsvp/', event_rsvp, name='event_rsvp'),
+    path('participants/', participant_list, name='participant_list'),
+    path('contact/', contact_page, name='contact'),
+    path('organizer-dashboard/', organizer_dashboard, name='organizer-dashboard'),
+    path('participant-dashboard/', participant_dashboard, name='participant-dashboard'),
 ]
 
 if settings.DEBUG:
