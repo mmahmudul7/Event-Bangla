@@ -121,19 +121,15 @@ def event_rsvp(request, id):
     return redirect(reverse('event_detail', kwargs={'id': event.id}))
 
 
-    # return redirect(reverse('event_detail', kwargs={'id': event.id}))
-    # return redirect('events/event_detail', event_id=event.id)
-
-
 @login_required
 def participant_list(request):
     participants = User.objects.filter(rsvp_events__isnull=False).distinct().order_by('username')  
     return render(request, 'events/participant_list.html', {'participants': participants})
 
-
+    
 # Organzer dashboard 
 @login_required
-def organizer_dashboard(request):
+def organizer_dashboard(request):    
     today = date.today()
     today_events = Event.objects.filter(date=today)
 
@@ -249,15 +245,3 @@ def participant_dashboard(request):
     }
     
     return render(request, 'events/participant_dashboard.html', context)
-  
-
-# @login_required
-# def dashboard(request):
-#     if is_organizer(request.user):
-#         return redirect('organizer-dashboard')
-#     elif is_participant(request.user):
-#         return redirect('participant-dashboard')
-#     if is_admin(request.user):
-#         return redirect('admin-dashboard')
-    
-#     return render('no-permission')

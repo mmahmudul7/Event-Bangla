@@ -10,13 +10,13 @@ from events.models import Event, Category, UserProfile
 from datetime import date
 from django.utils import timezone
 from django.db.models import Count, Prefetch
+from django.core.mail import send_mail
 
 # Create your views here.
 def is_admin(user):
     return user.groups.filter(name='Admin').exists()
 
 def sign_up(request):
-    form = CustomRegistrationForm()
     if request.method == 'POST':
         form = CustomRegistrationForm(request.POST)
         if form.is_valid():
@@ -24,13 +24,21 @@ def sign_up(request):
             user.set_password(form.cleaned_data.get('password1'))
             user.is_active = False
             user.save()
+
+            participant_group = Group.objects.get(name='Participant')
+            user.groups.add(participant_group)
+
+            UserProfile.objects.create(user=user)
+
             messages.success(
                 request, 'A Confirmation mail sent. Please check your email')
             return redirect('sign-in')
         else:
             print("Form is not valid")
-    return render(request, 'registration/register.html', {"form": form})
+    else:
+        form = CustomRegistrationForm()
 
+    return render(request, 'registration/register.html', {"form": form})
 
 def sign_in(request):
     form = LoginForm()
@@ -106,19 +114,7 @@ def admin_dashboard(request):
         filter_title = f"Events from {start_date} to {end_date}"
 
     categories = Category.objects.all()
-    context = {
-        'total_participants': total_participants,
-        'total_events': total_events,
-        'total_upcoming_events': total_upcoming_events,
-        'total_past_events': total_past_events,
-        'events': events,
-        'filtered_events': filtered_events,
-        'categories': categories,
-        'start_date': start_date,
-        'end_date': end_date,
-        'filter_title': filter_title,
-        'today_events': today_events,
-    }
+
     users = User.objects.prefetch_related(
         Prefetch('groups', queryset=Group.objects.all(), to_attr='all_groups')
     ).all()
@@ -131,22 +127,51 @@ def admin_dashboard(request):
         else:
             user.group_name = 'No Group Assigned'
 
-    return render(request, 'admin/admin_dashboard.html', {"users": users}, context)
+    context = {
+        'total_participants': total_participants,
+        'total_events': total_events,
+        'total_upcoming_events': total_upcoming_events,
+        'total_past_events': total_past_events,
+        'events': events,
+        'filtered_events': filtered_events,
+        'categories': categories,
+        'start_date': start_date,
+        'end_date': end_date,
+        'filter_title': filter_title,
+        'today_events': today_events,
+        "users": users,
+    }
+
+    return render(request, 'admin/admin_dashboard.html', context)
 
 
 
 @login_required
 def redirect_dashboard(request):
-    user_profile = UserProfile.objects.get(user=request.user)
+    profile, created = UserProfile.objects.get_or_create(user=request.user)
 
-    if user_profile.role == "admin":
-        return redirect("admin-dashboard")
-    elif user_profile.role == "organizer":
-        return redirect("organizer-dashboard")
-    elif user_profile.role == "participant":
-        return redirect("participant-dashboard")
+    if request.user.is_superuser:
+        return redirect('admin-dashboard')
+    elif request.user.groups.filter(name='Organizer').exists():
+        return redirect('organizer-dashboard')
+    elif request.user.groups.filter(name='Participant').exists():
+        return redirect('participant-dashboard')
     else:
         return redirect('no-permission')
+
+# def redirect_dashboard(request):
+#     user_profile = UserProfile.objects.get(user=request.user)
+#     role = user_profile.role.strip().lower()
+#     # print(f"User: {request.user}, Role: {role}")
+
+#     if role == "admin":
+#         return redirect("admin-dashboard")
+#     elif role == "organizer":
+#         return redirect("organizer-dashboard")
+#     elif role == "participant":
+#         return redirect("participant-dashboard")
+#     else:
+#         return redirect('no-permission')
     
 
 def create_group(request):
@@ -185,3 +210,30 @@ def group_list(request):
     return render(request, 'admin/group_list.html', {'groups': groups})
 
 
+@login_required
+def user_list(request):
+    users = User.objects.all().order_by('-date_joined')
+    return render(request, 'admin/user_list.html', {'users': users})
+
+
+def remove_participant(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    participant_group = Group.objects.filter(name="Participant").first()
+
+    if participant_group and participant_group in user.groups.all():
+        user.groups.remove(participant_group)
+        user.rsvp_events.clear()
+
+        send_mail(
+            subject="RSVP Cancellation Notice",
+            message=f"Hello {user.username},\n\nYou have been removed as a participant.",
+            from_email="noreply@eventbangla.com",
+            recipient_list=[user.email],
+            fail_silently=True,
+        )
+
+        messages.success(request, f"{user.username} removed from Participants.")
+    else:
+        messages.error(request, "User is not a participant.")
+
+    return redirect('user-list')

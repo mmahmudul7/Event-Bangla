@@ -17,17 +17,16 @@ def send_activation_email(sender, instance, created, **kwargs):
         recipient_list = [instance.email]
 
         try:
-            send_mail(subject, message, settings.EMAIL_HOST_USER, recipient_list)
+            send_mail(subject, message, settings.EMAIL_HOST_USER, recipient_list, fail_silently=False)
         except Exception as e:
             print(f"Failed to send email to {instance.email}: {str(e)}")
 
 
 @receiver(post_save, sender=User)
-def assign_role(sender, instance, created, **kwargs):
+def add_user_to_participant_group(sender, instance, created, **kwargs):
     if created:
-        user_group, created = Group.objects.get_or_create(name='User')
-        instance.groups.add(user_group)
-        instance.save()
+        participant_group, _ = Group.objects.get_or_create(name="Participant")
+        instance.groups.add(participant_group)
 
 
 @receiver(m2m_changed, sender=Event.participants.through)
@@ -37,27 +36,11 @@ def send_rsvp_confirmation(sender, instance, action, pk_set, **kwargs):
             user = instance.participants.get(id=user_id)
             send_mail(
                 subject="RSVP Confirmation",
-                message=f"Hello {user.username},\n\nYou have successfully RSVP'd for the event '{instance.name}'.",
-                from_email="noreply@eventbangla.com",
+                message=f"Hello {user.username},\n\nYou have successfully RSVP for the event '{instance.name}'.",
+                from_email="admin@eventbangla.com",
                 recipient_list=[user.email],
-                fail_silently=True,
+                fail_silently=False,
             )
-
-
-
-# @receiver(post_save, sender=User)
-# def assign_role(sender, instance, created, **kwargs):
-#     if created:
-#         user_group, created = Group.objects.get_or_create(name='User')
-#         instance.groups.add(user_group)
-#         instance.save()
-
-
-@receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
-    """New user become participant always"""
-    if created:
-        UserProfile.objects.create(user=instance, role='participant')
 
 
 @receiver(post_save, sender=Event)
@@ -65,6 +48,6 @@ def update_user_role(sender, instance, created, **kwargs):
     """participant to 'organizer' """
     if created:
         user_profile, _ = UserProfile.objects.get_or_create(user=instance.organizer)
-        if user_profile.role == 'participant':  # if participant then update
+        if user_profile.role == 'participant':
             user_profile.role = 'organizer'
             user_profile.save()

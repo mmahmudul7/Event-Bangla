@@ -1,0 +1,57 @@
+{% extends 'admin-base.html' %}
+
+{% block admin-content %}
+    <div class="max-w-7xl mx-auto py-6">
+        <h1 class="text-3xl font-bold text-blue-950 border-b-2 border-teal-500 pb-3 mb-5">User List</h1>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="mb-4 p-3 text-white rounded-md {% if message.tags == 'success' %}bg-green-500{% else %}bg-red-500{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="overflow-x-auto bg-white p-4 rounded-lg shadow-lg border border-gray-200">
+            <table class="min-w-full border-collapse rounded-lg">
+                <thead>
+                    <tr class="bg-gradient-to-r from-teal-500 to-teal-700 text-white">
+                        <th class="py-3 px-4 text-left">ID</th>
+                        <th class="py-3 px-4 text-left">Username</th>
+                        <th class="py-3 px-4 text-left">Email</th>
+                        <th class="py-3 px-4 text-left">Role</th>
+                        <th class="py-3 px-4 text-left">Date Joined</th>
+                        <th class="py-3 px-4 text-left">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                        <tr class="even:bg-gray-100 odd:bg-white text-gray-800">
+                            <td class="border border-gray-300 px-4 py-2 font-medium">{{ user.id }}</td>
+                            <td class="border border-gray-300 px-4 py-2">{{ user.username }}</td>
+                            <td class="border border-gray-300 px-4 py-2">{{ user.email }}</td>
+                            <td class="border border-gray-300 px-4 py-2">
+                                {% if user.groups.exists %}
+                                    <span class="bg-teal-100 text-teal-700 px-2 py-1 rounded-md">{{ user.groups.first.name }}</span>
+                                {% else %}
+                                    <span class="text-gray-500 italic">No Role</span>
+                                {% endif %}
+                            </td>
+                            <td class="border border-gray-300 px-4 py-2">{{ user.date_joined|date:"d M, Y - h:i A" }}</td>
+                            <td class="border border-gray-300 px-4 py-2">
+                                <a href="{% url 'assign-role' user.id %}" class="bg-teal-500 text-white px-3 py-1.5 rounded-md shadow-md hover:bg-teal-600 transition">
+                                    Assign Role
+                                </a>
+                                {% if user.groups.first.name == "Participant" %}
+                                    <a href="{% url 'remove-participant' user.id %}" class="bg-red-500 text-white px-3 py-1.5 rounded-md shadow-md hover:bg-red-600 transition ml-2">
+                                        Remove
+                                    </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
