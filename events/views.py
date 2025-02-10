@@ -131,7 +131,6 @@ def participant_list(request):
     return render(request, 'events/participant_list.html', {'participants': participants})
 
 
-
 # Organzer dashboard 
 @login_required
 def organizer_dashboard(request):

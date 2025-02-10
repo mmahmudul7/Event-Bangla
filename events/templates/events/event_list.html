@@ -12,14 +12,14 @@
 
 <!-- Event Search -->
 <form method="GET" action="{% url 'event_list' %}" class="mb-4 flex-col md:flex-row items-center gap-2">
-    <input type="text" name="q" value="{{ request.GET.q }}" class="p-2 border rounded-lg w-full md:w-1/2" placeholder="Search events by name or location">
-    <select name="category" class="p-2 border rounded-lg w-full md:w-auto">
+    <input type="text" name="q" value="{{ request.GET.q }}" class="p-2 border rounded w-full md:w-1/2" placeholder="Search events by name or location">
+    <select name="category" class="p-2 border rounded w-full md:w-auto">
         <option value="">All Categories</option>
         {% for category in categories %}
         <option value="{{ category.id }}" {% if category.id|stringformat:"s" == request.GET.category %}selected{% endif %}>{{ category.name }}</option>
         {% endfor %}
     </select>
-    <button type="submit" class="bg-teal-500 text-white px-4 py-2 rounded-lg w-full md:w-auto">Filter</button>
+    <button type="submit" class="bg-teal-500 text-white px-4 py-2 rounded w-full md:w-auto">Filter</button>
 </form>
 
 
@@ -29,7 +29,7 @@
         <h2 class="text-2xl font-bold text-gray-700 mb-6">All Events</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {% for event in events %}
-            <div class="event-card bg-white shadow-lg rounded-lg overflow-hidden">
+            <div class="event-card bg-white shadow-lg rounded overflow-hidden">
                 <!-- Event Image -->
                 {% if event.event_image %}
                     <img src="{{ event.event_image.url }}" alt="{{ event.name }}" class="w-full h-40 object-cover">
@@ -69,7 +69,7 @@
                                 </a>
                             {% endif %}
                         {% else %}
-                            <a href="{% url 'sign-in' %}" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition">
+                            <a href="{% url 'sign-in' %}" class="bg-blue-900 text-white px-4 py-2 rounded hover:bg-blue-950 transition">
                                 Login to RSVP!
                             </a>
                         {% endif %}

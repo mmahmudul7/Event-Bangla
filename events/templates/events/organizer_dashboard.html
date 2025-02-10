@@ -7,29 +7,51 @@
     <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <a 
             href="{% url 'participant_list' %}" 
-            class="block bg-white p-6 rounded-lg shadow hover:shadow-lg transition cursor-pointer">
+            class="block bg-white p-6 rounded shadow hover:shadow-lg transition cursor-pointer">
             <h3 class="text-gray-700 text-lg font-semibold">Total Participants</h3>
             <p class="text-3xl font-bold text-teal-600">{{ total_participants }}</p>
         </a>
         <a 
             href="?filter=total_events" 
-            class="block bg-white p-6 rounded-lg shadow hover:shadow-lg transition cursor-pointer">
+            class="block bg-white p-6 rounded shadow hover:shadow-lg transition cursor-pointer">
             <h3 class="text-gray-700 text-lg font-semibold">Total Events</h3>
             <p class="text-3xl font-bold text-teal-600">{{ total_events }}</p>
         </a>
         <a 
             href="?filter=upcoming_events" 
-            class="block bg-white p-6 rounded-lg shadow hover:shadow-lg transition cursor-pointer">
+            class="block bg-white p-6 rounded shadow hover:shadow-lg transition cursor-pointer">
             <h3 class="text-gray-700 text-lg font-semibold">Upcoming Events</h3>
             <p class="text-3xl font-bold text-teal-600">{{ total_upcoming_events }}</p>
         </a>
         <a 
             href="?filter=past_events" 
-            class="block bg-white p-6 rounded-lg shadow hover:shadow-lg transition cursor-pointer">
+            class="block bg-white p-6 rounded shadow hover:shadow-lg transition cursor-pointer">
             <h3 class="text-gray-700 text-lg font-semibold">Past Events</h3>
             <p class="text-3xl font-bold text-teal-600">{{ total_past_events }}</p>
         </a>
     </section>
+
+    <!-- My RSVP Events Section -->
+    <section class="bg-white p-6 rounded-lg shadow-md mb-8">
+        <h2 class="text-2xl font-semibold text-teal-600 mb-4">My RSVP Events</h2>
+
+        {% if rsvp_events %}
+            <ul class="divide-y divide-gray-200">
+                {% for event in rsvp_events %}
+                    <li class="p-3 mt-3 flex justify-between items-center bg-gray-100 rounded-md shadow-sm hover:shadow-md transition">
+                        <!-- Event Details -->
+                        <a href="{% url 'event_detail' event.id %}">
+                            <h3 class="text-lg font-bold text-gray-800">{{ event.name }}</h3>
+                            <p class="text-gray-600">{{ event.location }} | {{ event.date }} | {{event.time}} </p>
+                        </a>                        
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-gray-500">You have not RSVP'd for any events yet.</p>
+        {% endif %}
+    </section>
+
 
     <!-- Events List -->
     <section>
@@ -62,7 +84,7 @@
                         <!-- event details -->
                         <div>
                             <a href="{% url 'event_detail' event.id %}" class="text-teal-600 font-bold hover:underline">
-                                <img src="{{ event.image.url }}" alt="{{ event.name }}" class="h-30 object-cover rounded-md mb-2">
+                                <img src="{{ event.image.url }}" alt="{{ event.name }}" class="h-30 object-cover rounded mb-2">
                                 {{ event.name }}
                             </a>
                             <p class="text-gray-600">{{ event.location }} | {{ event.time }}</p>

@@ -28,7 +28,7 @@
             <p><strong>Participants:</strong></p>
             <ul>
                 {% for participant in event.participants.all %}
-                    <li>{{ participant.name }}</li>
+                    <li>{{ participant.get_full_name }}</li>
                 {% endfor %}
             </ul>
         </div>
