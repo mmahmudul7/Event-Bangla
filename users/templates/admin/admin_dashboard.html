@@ -35,7 +35,7 @@
     </section>
 
     <!-- My RSVP Events Section -->
-    <section class="bg-white p-6 rounded-lg shadow-md mb-8">
+    {% comment %} <section class="bg-white p-6 rounded-lg shadow-md mb-8">
         <h2 class="text-2xl font-semibold text-teal-600 mb-4">My RSVP Events</h2>
 
         {% if rsvp_events %}
@@ -53,7 +53,7 @@
         {% else %}
             <p class="text-gray-500">You have not RSVP'd for any events yet.</p>
         {% endif %}
-    </section>
+    </section> {% endcomment %}
 
 
     <!-- Events List -->
@@ -63,7 +63,7 @@
         <!-- Categories -->
         <div class="flex flex-wrap gap-3 mb-4">
             {% for category in categories %}
-                <div class="flex items-center gap-2 bg-teal-500 px-4 py-2 rounded shadow hover:shadow-lg transition cursor-pointer">
+                <div class="flex items-center gap-2 bg-teal-500 px-3 py-2 rounded shadow hover:shadow-lg transition cursor-pointer">
                     <a href="?category={{ category.name }}" class="text-white font-medium hover:text-blue-950 transition">
                         {{ category.name }}
                     </a>

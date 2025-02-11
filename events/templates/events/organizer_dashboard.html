@@ -30,15 +30,15 @@
         </a>
     </section>
 
-<section class="mb-8 flex gap-4">
-    <a href="{% url 'event_create' %}" class="bg-teal-500 text-blue-950 font-semibold p-4 rounded-lg shadow-lg hover:shadow-xl transition duration-300 transform hover:scale-105">
-        Create New Event
-    </a>
+    <section class="mb-8 flex gap-4">
+        <a href="{% url 'event_create' %}" class="bg-teal-500 text-blue-950 font-semibold p-4 rounded-lg shadow-lg hover:shadow-xl transition duration-300 transform hover:scale-105 hover:text-white">
+            Create New Event
+        </a>
 
-    <a href="{% url 'category_create' %}" class="bg-teal-500 text-white font-semibold p-4 rounded-lg shadow-lg hover:shadow-xl transition duration-300 transform hover:scale-105">
-        Add Category
-    </a>
-</section>
+        <a href="{% url 'category_create' %}" class="bg-teal-500 text-white font-semibold p-4 rounded-lg shadow-lg hover:shadow-xl transition duration-300 transform hover:scale-105 hover:text-blue-950">
+            Add Category
+        </a>
+    </section>
 
 
     <!-- Organizer Events Section -->
@@ -46,11 +46,11 @@
         <h2 class="text-2xl font-semibold text-blue-900 mb-4">My Events:</h2>
         <ul class="divide-y divide-gray-200">
             {% for event in events %}
-                <li class="p-3 mt-3 flex justify-between items-center bg-gray-100 rounded-md shadow-sm hover:shadow-md transition">
-                    <a href="{% url 'event_detail' event.id %}">{{ event.name }}</a> - {{ event.date }}
+                <li class="p-3 mt-3 flex justify-between items-center bg-gray-100 font-normal rounded-md shadow-sm hover:shadow-md transition">
+                    <a href="{% url 'event_detail' event.id %}">{{ event.name }}</a> {{ event.date }} | {{ event.time }} |  {{event.location}} 
                     <div class="flex gap-4">
                         <!-- Update Button -->
-                        <a href="{% url 'event_update' event.id %}" class="text-blue-500 hover:underline">
+                        <a href="{% url 'event_update' event.id %}" class="text-blue-950 hover:underline">
                             Update
                         </a>
 
@@ -72,7 +72,7 @@
 
 
     <!-- My RSVP Events Section -->
-    <section class="bg-white p-6 rounded-lg shadow-md mb-8">
+    {% comment %} <section class="bg-white p-6 rounded-lg shadow-md mb-8">
         <h2 class="text-2xl font-semibold text-teal-600 mb-4">My RSVP Events</h2>
 
         {% if rsvp_events %}
@@ -90,7 +90,7 @@
         {% else %}
             <p class="text-gray-500">You have not RSVP'd for any events yet.</p>
         {% endif %}
-    </section>
+    </section> {% endcomment %}
 
 
     <!-- Events List -->
@@ -100,7 +100,7 @@
         <!-- Categories -->
         <div class="flex flex-wrap gap-3 mb-4">
             {% for category in categories %}
-                <div class="flex items-center gap-2 bg-teal-500 px-4 py-2 rounded shadow hover:shadow-lg transition cursor-pointer">
+                <div class="flex items-center gap-2 bg-teal-500 px-3 py-2 rounded shadow hover:shadow-lg transition cursor-pointer">
                     <a href="?category={{ category.name }}" class="text-white font-medium hover:text-blue-950 transition">
                         {{ category.name }}
                     </a>

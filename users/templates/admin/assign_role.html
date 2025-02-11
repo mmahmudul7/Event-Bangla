@@ -2,7 +2,7 @@
 
 {% block admin-content %}
     <div class="max-w-lg mx-auto my-8 bg-white p-6 rounded-xl shadow-lg border border-gray-200">
-        <h2 class="text-2xl font-bold text-blue-950 mb-4 text-center">Create Group</h2>
+        <h2 class="text-2xl font-bold text-blue-950 mb-4 text-center">Assign Role</h2>
         <form method="POST" class="space-y-4">
             {% csrf_token %}
             
@@ -15,8 +15,8 @@
                 {% endfor %}
             </div>
 
-            <button type="submit" class="w-full bg-blue-950 text-white py-2 rounded-lg font-semibold hover:bg-blue-900 transition">
-                Create Group
+            <button type="submit" class="w-full bg-blue-950 text-white py-2 rounded font-semibold hover:bg-blue-900 transition">
+                Assign
             </button>
         </form>
     </div>

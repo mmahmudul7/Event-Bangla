@@ -58,7 +58,7 @@ class StyledFormMixin:
 class CustomRegistrationForm(StyledFormMixin, forms.ModelForm):
     password1 = forms.CharField(widget=forms.PasswordInput)
     confirm_password = forms.CharField(widget=forms.PasswordInput)
-
+    
     class Meta:
         model = User
         fields = ['username', 'first_name', 'last_name',
