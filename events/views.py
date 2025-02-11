@@ -4,7 +4,7 @@ from events.models import Event, Category
 from django.utils.timezone import now
 from django.db.models import Q, Count
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required, user_passes_test, permission_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 from users.views import is_admin
 from datetime import date
@@ -17,6 +17,9 @@ def is_organizer(user):
 
 def is_participant(user):
     return user.groups.filter(name='Participant').exists()
+
+def is_organizer_or_admin(user):
+    return is_organizer(user) or is_admin(user)
 
 # Event List view
 def event_list(request):
@@ -70,6 +73,7 @@ def event_create(request):
     return render(request, 'events/event_form.html', {'form': form, 'next_url': next_url})
 
 @login_required
+@user_passes_test(is_organizer_or_admin, login_url='no-permission')
 def event_update(request, id):
     event = get_object_or_404(Event, id=id)
     if request.user != event.organizer and not request.user.is_superuser:
@@ -86,6 +90,7 @@ def event_update(request, id):
     return render(request, 'events/event_form.html', {'form': form})
 
 @login_required
+@user_passes_test(is_organizer_or_admin, login_url='no-permission')
 def event_delete(request, id):
     event = get_object_or_404(Event, id=id)
     if request.user != event.organizer and not request.user.is_superuser:
@@ -109,6 +114,7 @@ def contact_page(request):
 
 
 @login_required
+@user_passes_test(is_participant, login_url='no-permission')
 def event_rsvp(request, id):
     event = get_object_or_404(Event, id=id)
     user = request.user
@@ -192,6 +198,7 @@ def organizer_dashboard(request):
 
 # Paticipant dashbaord 
 @login_required
+@user_passes_test(is_participant, login_url='no-permission')
 def participant_dashboard(request):
     today = date.today()
     today_events = Event.objects.filter(date=today)
@@ -253,6 +260,7 @@ def participant_dashboard(request):
 
 
 @login_required
+@user_passes_test(is_organizer_or_admin, login_url='no-permission')
 def category_create(request):
     if not (request.user.is_superuser or request.user.groups.filter(name="Organizer").exists()):
         messages.error(request, "You are not authorized to create a category.")
@@ -277,6 +285,7 @@ def category_create(request):
 
 
 @login_required
+@user_passes_test(is_organizer_or_admin, login_url='no-permission')
 def category_update(request, id):
     category = get_object_or_404(Category, id=id)
 
@@ -298,10 +307,11 @@ def category_update(request, id):
 
 
 @login_required
+@user_passes_test(is_organizer_or_admin, login_url='no-permission')
 def category_delete(request, id):
     category = get_object_or_404(Category, id=id)
 
-    if category.organizer is None or (request.user != category.organizer and not request.user.is_superuser):
+    if request.user == category.organizer or request.user.is_superuser:
         category.delete()
         messages.success(request, 'Category deleted successfully!')
         return redirect('dashboard')

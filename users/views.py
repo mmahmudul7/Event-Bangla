@@ -10,7 +10,6 @@ from events.models import Event, Category, UserProfile
 from datetime import date
 from django.utils import timezone
 from django.db.models import Count, Prefetch
-from django.core.mail import send_mail
 
 # Create your views here.
 def is_admin(user):
