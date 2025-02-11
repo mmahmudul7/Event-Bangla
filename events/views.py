@@ -298,7 +298,8 @@ def category_create(request):
 def category_update(request, id):
     category = get_object_or_404(Category, id=id)
 
-    if category.organizer is None or (request.user != category.organizer and not request.user.is_superuser):
+    # if category.organizer is None or (request.user != category.organizer and not request.user.is_superuser):
+    if category.organizer != request.user and not request.user.is_superuser:
         messages.error(request, "You are not authorized to edit this category.")
         return redirect("dashboard")
 
