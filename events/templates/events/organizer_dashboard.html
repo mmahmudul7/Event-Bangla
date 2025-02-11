@@ -45,7 +45,7 @@
     <section class="bg-white p-6 rounded-lg shadow-md mb-8">
         <h2 class="text-2xl font-semibold text-blue-900 mb-4">My Events:</h2>
         <ul class="divide-y divide-gray-200">
-            {% for event in events %}
+            {% for event in myEvents %}
                 <li class="p-3 mt-3 flex justify-between items-center bg-gray-100 font-normal rounded-md shadow-sm hover:shadow-md transition">
                     <a href="{% url 'event_detail' event.id %}">{{ event.name }}</a> {{ event.date }} | {{ event.time }} |  {{event.location}} 
                     <div class="flex gap-4">
@@ -69,29 +69,6 @@
             {% endfor %}
         </ul>
     </section>
-
-
-    <!-- My RSVP Events Section -->
-    {% comment %} <section class="bg-white p-6 rounded-lg shadow-md mb-8">
-        <h2 class="text-2xl font-semibold text-teal-600 mb-4">My RSVP Events</h2>
-
-        {% if rsvp_events %}
-            <ul class="divide-y divide-gray-200">
-                {% for event in rsvp_events %}
-                    <li class="p-3 mt-3 flex justify-between items-center bg-gray-100 rounded-md shadow-sm hover:shadow-md transition">
-                        <!-- Event Details -->
-                        <a href="{% url 'event_detail' event.id %}">
-                            <h3 class="text-lg font-bold text-gray-800">{{ event.name }}</h3>
-                            <p class="text-gray-600">{{ event.location }} | {{ event.date }} | {{event.time}} </p>
-                        </a>                        
-                    </li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p class="text-gray-500">You have not RSVP'd for any events yet.</p>
-        {% endif %}
-    </section> {% endcomment %}
-
 
     <!-- Events List -->
     <section>
@@ -146,20 +123,23 @@
     
                         <!-- update and delete -->
                         <div class="flex gap-4">
-                            <!-- Update Button -->
-                            <a href="{% url 'event_update' event.id %}" class="text-blue-500 hover:underline">
-                                Update
-                            </a>
-                            
-                            <!-- Delete Form -->
-                            <form method="post" action="{% url 'event_delete' event.id %}">
-                                {% csrf_token %}
-                                <button type="submit" class="text-red-500 hover:underline" 
-                                        onclick="return confirm('Are you sure you want to delete this event?');">
-                                    Delete
-                                </button>
-                            </form>
+                            {% if event.organizer == request.user %}
+                                <!-- Update Button -->
+                                <a href="{% url 'event_update' event.id %}" class="text-blue-950 hover:underline">
+                                    Update
+                                </a>
+                                
+                                <!-- Delete Form -->
+                                <form method="post" action="{% url 'event_delete' event.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="text-red-500 hover:underline" 
+                                            onclick="return confirm('Are you sure you want to delete this event?');">
+                                        Delete
+                                    </button>
+                                </form>
+                            {% endif %}
                         </div>
+
                     </div>
                 </li>
             {% empty %}

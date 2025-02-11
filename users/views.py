@@ -3,7 +3,7 @@ from users.forms import CustomRegistrationForm, AssignRoleForm, CreateGroupForm
 from django.contrib import messages
 from users.forms import LoginForm
 from django.contrib.auth import login, logout
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.tokens import default_token_generator
 from events.models import Event, Category, UserProfile
@@ -73,6 +73,7 @@ def activate_user(request, user_id, token):
     
 
 # Admin dashboard 
+@user_passes_test(is_admin, login_url='no-permission')
 def admin_dashboard(request):
     today = date.today()
     today_events = Event.objects.filter(date=today)
@@ -172,8 +173,10 @@ def redirect_dashboard(request):
 #         return redirect("participant-dashboard")
 #     else:
 #         return redirect('no-permission')
-    
 
+
+
+@user_passes_test(is_admin, login_url='no-permission')
 def create_group(request):
     form = CreateGroupForm()
     if request.method == 'POST':
@@ -187,7 +190,7 @@ def create_group(request):
     return render(request, 'admin/create_group.html', {'form': form})
 
 
-
+@user_passes_test(is_admin, login_url='no-permission')
 def assign_role(request, user_id):
     user = User.objects.get(id=user_id)
     form = AssignRoleForm()
@@ -204,18 +207,20 @@ def assign_role(request, user_id):
     return render(request, 'admin/assign_role.html', {"form": form})
 
 
-
+@user_passes_test(is_admin, login_url='no-permission')
 def group_list(request):
     groups = Group.objects.prefetch_related('permissions').all()
     return render(request, 'admin/group_list.html', {'groups': groups})
 
 
+@user_passes_test(is_admin, login_url='no-permission')
 @login_required
 def user_list(request):
     users = User.objects.all().order_by('-date_joined')
     return render(request, 'admin/user_list.html', {'users': users})
 
 
+@user_passes_test(is_admin, login_url='no-permission')
 def remove_participant(request, user_id):
     user = get_object_or_404(User, id=user_id)
     participant_group = Group.objects.filter(name="Participant").first()
@@ -223,15 +228,6 @@ def remove_participant(request, user_id):
     if participant_group and participant_group in user.groups.all():
         user.groups.remove(participant_group)
         user.rsvp_events.clear()
-
-        send_mail(
-            subject="RSVP Cancellation Notice",
-            message=f"Hello {user.username},\n\nYou have been removed as a participant.",
-            from_email="noreply@eventbangla.com",
-            recipient_list=[user.email],
-            fail_silently=True,
-        )
-
         messages.success(request, f"{user.username} removed from Participants.")
     else:
         messages.error(request, "User is not a participant.")

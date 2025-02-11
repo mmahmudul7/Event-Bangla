@@ -4,7 +4,7 @@ from events.models import Event, Category
 from django.utils.timezone import now
 from django.db.models import Q, Count
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test, permission_required
 from django.contrib.auth.models import User
 from users.views import is_admin
 from datetime import date
@@ -16,10 +16,9 @@ def is_organizer(user):
     return user.groups.filter(name='Organizer').exists()
 
 def is_participant(user):
-    return user.groups.filter(name='Organizer').exists()
+    return user.groups.filter(name='Participant').exists()
 
 # Event List view
-# @login_required
 def event_list(request):
     start_date = request.GET.get('start_date')
     end_date = request.GET.get('end_date')
@@ -37,7 +36,9 @@ def event_list(request):
 
     events = events.prefetch_related('participants')
     categories = Category.objects.all()
-    total_participants = Event.objects.aggregate(total=Count('participants', distinct=True))['total'] or 0
+    # total_participants = Event.objects.aggregate(total=Count('participants', distinct=True))['total'] or 0
+    total_participants = User.objects.filter(rsvp_events__isnull=False).distinct().count()
+
 
     context = {
         'events': events,
@@ -46,12 +47,13 @@ def event_list(request):
     }
     return render(request, 'events/event_list.html', context)
 
-@login_required
+# @login_required
 def event_detail(request, id):
     event = get_object_or_404(Event, id=id)
     return render(request, 'events/event_detail.html', {'event': event})
 
 @login_required
+@user_passes_test(is_organizer, login_url='no-permission')
 def event_create(request):
     next_url = request.GET.get('next', 'dashboard')
     if request.method == "POST":
@@ -129,6 +131,7 @@ def participant_list(request):
     
 # Organzer dashboard 
 @login_required
+@user_passes_test(is_organizer, login_url='no-permission')
 def organizer_dashboard(request):    
     today = date.today()
     today_events = Event.objects.filter(date=today)
@@ -139,6 +142,7 @@ def organizer_dashboard(request):
     total_past_events = Event.objects.filter(date__lt=timezone.now()).count()
 
     events = Event.objects.select_related('category').all()
+    myEvents = Event.objects.filter(organizer=request.user)
     filter = request.GET.get('filter', None)
     category = request.GET.get('category', None)
     filter_title = "Today's Events"
@@ -182,6 +186,7 @@ def organizer_dashboard(request):
         'end_date': end_date,
         'filter_title': filter_title,
         'today_events': today_events,
+        'myEvents': myEvents,
     }
     return render(request, 'events/organizer_dashboard.html', context)
 
@@ -275,7 +280,7 @@ def category_create(request):
 def category_update(request, id):
     category = get_object_or_404(Category, id=id)
 
-    if not (request.user.is_superuser or request.user == category.organizer):
+    if category.organizer is None or (request.user != category.organizer and not request.user.is_superuser):
         messages.error(request, "You are not authorized to edit this category.")
         return redirect("dashboard")
 
@@ -296,7 +301,7 @@ def category_update(request, id):
 def category_delete(request, id):
     category = get_object_or_404(Category, id=id)
 
-    if request.user.is_superuser or request.user == category.organizer:
+    if category.organizer is None or (request.user != category.organizer and not request.user.is_superuser):
         category.delete()
         messages.success(request, 'Category deleted successfully!')
         return redirect('dashboard')

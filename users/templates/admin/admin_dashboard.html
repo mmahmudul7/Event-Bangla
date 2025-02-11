@@ -34,31 +34,9 @@
         </a>
     </section>
 
-    <!-- My RSVP Events Section -->
-    {% comment %} <section class="bg-white p-6 rounded-lg shadow-md mb-8">
-        <h2 class="text-2xl font-semibold text-teal-600 mb-4">My RSVP Events</h2>
-
-        {% if rsvp_events %}
-            <ul class="divide-y divide-gray-200">
-                {% for event in rsvp_events %}
-                    <li class="p-3 mt-3 flex justify-between items-center bg-gray-100 rounded-md shadow-sm hover:shadow-md transition">
-                        <!-- Event Details -->
-                        <a href="{% url 'event_detail' event.id %}">
-                            <h3 class="text-lg font-bold text-gray-800">{{ event.name }}</h3>
-                            <p class="text-gray-600">{{ event.location }} | {{ event.date }} | {{event.time}} </p>
-                        </a>                        
-                    </li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p class="text-gray-500">You have not RSVP'd for any events yet.</p>
-        {% endif %}
-    </section> {% endcomment %}
-
-
     <!-- Events List -->
     <section>
-        <h2 class="text-xl font-bold text-gray-700 mb-4">All Events</h2>
+        <h2 class="text-xl font-bold text-blue-950 mb-4">All Events</h2>
         
         <!-- Categories -->
         <div class="flex flex-wrap gap-3 mb-4">
@@ -111,7 +89,7 @@
                         <!-- update and delete -->
                         <div class="flex gap-4">
                             <!-- Update Button -->
-                            <a href="{% url 'event_update' event.id %}" class="text-blue-500 hover:underline">
+                            <a href="{% url 'event_update' event.id %}" class="text-blue-950 hover:underline">
                                 Update
                             </a>
                             
