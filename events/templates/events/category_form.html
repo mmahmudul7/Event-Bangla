@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <div class="max-w-lg mx-auto bg-white shadow-lg rounded p-6 mt-6">
+        <h2 class="text-2xl font-semibold text-blue-950 mb-4">{% if form.instance.id %}
+                Edit
+            {% else %}
+                Create
+            {% endif %}
+            Category
+        </h2>
+        
+        <form method="post" class="space-y-4">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="w-full py-3 bg-blue-950 text-white font-semibold rounded hover:bg-blue-900 transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-opacity-50">
+                {% if form.instance.id %}
+                    Update
+                {% else %}
+                    Create
+                {% endif %}
+            </button>
+        </form>
+        
+        <div class="mt-4">
+            <a href="{% url 'dashboard' %}" class="text-gray-500 hover:underline text-sm">Back to Dashboard</a>
+        </div>
+    </div>
+{% endblock %}

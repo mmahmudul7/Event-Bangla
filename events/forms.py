@@ -11,7 +11,7 @@ class EventForm(StyledFormMixin, forms.ModelForm):
             'time': forms.TimeInput(attrs={'type': 'time'}),
         }
 
-class CategoryForm(forms.ModelForm):
+class CategoryForm(StyledFormMixin, forms.ModelForm):
     class Meta:
         model = Category
         fields = ['name', 'description']

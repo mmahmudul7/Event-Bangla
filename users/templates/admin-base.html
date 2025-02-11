@@ -23,6 +23,7 @@
                     {% if user.is_authenticated %}
                         <li><a href="{% url 'event_list' %}" class="hover:underline block">All Events</a></li>
                         <li><a href="{% url 'user-list' %}" class="hover:underline">User List</a></li>
+                        <li><a href="{% url 'category_create' %}" class="btn btn-primary">Add Category</a></li>
                         <li><a href="{% url 'group-list' %}" class="hover:underline">Group List</a></li>
                         <li><a href="{% url 'create-group' %}" class="hover:underline">Create Group</a></li>
                         <li><a href="{% url 'dashboard' %}" class="hover:underline">Dashboard</a></li>
@@ -39,6 +40,7 @@
                 {% if user.is_authenticated %}
                     <li><a href="{% url 'event_list' %}" class="hover:underline block">All Events</a></li>
                     <li><a href="{% url 'user-list' %}" class="hover:underline">User List</a></li>
+                    <li><a href="{% url 'category_create' %}" class="btn btn-primary">Add Category</a></li>
                     <li><a href="{% url 'group-list' %}" class="hover:underline">Group List</a></li>
                     <li><a href="{% url 'create-group' %}" class="hover:underline">Create Group</a></li>
                     <li><a href="{% url 'dashboard' %}" class="hover:underline">Dashboard</a></li>

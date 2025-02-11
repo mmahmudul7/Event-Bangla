@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from events.forms import EventForm
+from events.forms import EventForm, CategoryForm
 from events.models import Event, Category
 from django.utils.timezone import now
 from django.db.models import Q, Count
@@ -70,9 +70,9 @@ def event_create(request):
 @login_required
 def event_update(request, id):
     event = get_object_or_404(Event, id=id)
-    if request.user != event.organizer:
+    if request.user != event.organizer and not request.user.is_superuser:
         messages.error(request, "You are not authorized to edit this event.")
-        return redirect('event_list')
+        return redirect('dashboard')
     if request.method == 'POST':
         form = EventForm(request.POST, request.FILES, instance=event)
         if form.is_valid():
@@ -86,9 +86,9 @@ def event_update(request, id):
 @login_required
 def event_delete(request, id):
     event = get_object_or_404(Event, id=id)
-    if request.user != event.organizer:
+    if request.user != event.organizer and not request.user.is_superuser:
         messages.error(request, "You are not authorized to delete this event.")
-        return redirect('event_list')
+        return redirect('dashboard')
     if request.method == 'POST':
         event.delete()
         messages.success(request, 'Event deleted successfully!')
@@ -245,3 +245,62 @@ def participant_dashboard(request):
     }
     
     return render(request, 'events/participant_dashboard.html', context)
+
+
+@login_required
+def category_create(request):
+    if not (request.user.is_superuser or request.user.groups.filter(name="Organizer").exists()):
+        messages.error(request, "You are not authorized to create a category.")
+        return redirect("dashboard")
+
+    if request.method == "POST":
+        form = CategoryForm(request.POST)
+        if form.is_valid():
+            category = form.save(commit=False)
+
+            if request.user.groups.filter(name="Organizer").exists():
+                category.organizer = request.user
+            
+            category.save()
+            messages.success(request, "Category created successfully!")
+            return redirect("dashboard")
+    else:
+        form = CategoryForm()
+    
+    return render(request, "events/category_form.html", {"form": form})
+
+
+
+@login_required
+def category_update(request, id):
+    category = get_object_or_404(Category, id=id)
+
+    if not (request.user.is_superuser or request.user == category.organizer):
+        messages.error(request, "You are not authorized to edit this category.")
+        return redirect("dashboard")
+
+    if request.method == "POST":
+        form = CategoryForm(request.POST, instance=category)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Category updated successfully!")
+            return redirect("dashboard")
+    else:
+        form = CategoryForm(instance=category)
+
+    return render(request, "events/category_form.html", {"form": form})
+
+
+
+@login_required
+def category_delete(request, id):
+    category = get_object_or_404(Category, id=id)
+
+    if request.user.is_superuser or request.user == category.organizer:
+        category.delete()
+        messages.success(request, 'Category deleted successfully!')
+        return redirect('dashboard')
+    else:
+        messages.error(request, 'You are not authorized to delete this category.')
+        return redirect('dashboard')
+    

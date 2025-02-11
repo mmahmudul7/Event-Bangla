@@ -19,10 +19,14 @@ class UserProfile(models.Model):
 class Category(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
+    organizer = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank=True, related_name="organized_categories"
+    )
+    # organizer = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
-
+    
 
 class Event(models.Model):
     name = models.CharField(max_length=100)
