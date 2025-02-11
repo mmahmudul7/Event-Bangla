@@ -22,7 +22,6 @@ class Category(models.Model):
     organizer = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, blank=True, related_name="organized_categories"
     )
-    # organizer = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name

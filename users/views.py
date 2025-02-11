@@ -74,24 +74,23 @@ def activate_user(request, user_id, token):
 # Admin dashboard 
 @user_passes_test(is_admin, login_url='no-permission')
 def admin_dashboard(request):
-    today = date.today()
-    today_events = Event.objects.filter(date=today)
+    events = Event.objects.select_related('category').prefetch_related('participants').all()
 
     total_participants = Event.objects.aggregate(total=Count('participants', distinct=True))['total'] or 0
-    total_events = Event.objects.count()
+    # total_events = Event.objects.count()
+    total_events = len(events)
     total_upcoming_events = Event.objects.filter(date__gte=timezone.now()).count()
     total_past_events = Event.objects.filter(date__lt=timezone.now()).count()
 
-    events = Event.objects.select_related('category').all()
     filter = request.GET.get('filter', None)
     category = request.GET.get('category', None)
-    filter_title = "Today's Events"
-    filtered_events = []
+    # filter_title = "Today's Events"
+    # filtered_events = []
+    filtered_events = events 
 
     if not filter:
-        today = timezone.now().date()
-        filtered_events = events.filter(date=today)
-        filter_title = "Today's Events"
+        # filtered_events = events.filter(date=today)
+        filter_title = "All Events"
 
     if filter == 'upcoming_events':
         filtered_events = events.filter(date__gte=timezone.now())
@@ -119,8 +118,6 @@ def admin_dashboard(request):
         Prefetch('groups', queryset=Group.objects.all(), to_attr='all_groups')
     ).all()
 
-    print(users)
-
     for user in users:
         if user.all_groups:
             user.group_name = user.all_groups[0].name
@@ -138,7 +135,7 @@ def admin_dashboard(request):
         'start_date': start_date,
         'end_date': end_date,
         'filter_title': filter_title,
-        'today_events': today_events,
+        # 'today_events': today_events,
         "users": users,
     }
 
@@ -158,21 +155,6 @@ def redirect_dashboard(request):
         return redirect('participant-dashboard')
     else:
         return redirect('no-permission')
-
-# def redirect_dashboard(request):
-#     user_profile = UserProfile.objects.get(user=request.user)
-#     role = user_profile.role.strip().lower()
-#     # print(f"User: {request.user}, Role: {role}")
-
-#     if role == "admin":
-#         return redirect("admin-dashboard")
-#     elif role == "organizer":
-#         return redirect("organizer-dashboard")
-#     elif role == "participant":
-#         return redirect("participant-dashboard")
-#     else:
-#         return redirect('no-permission')
-
 
 
 @user_passes_test(is_admin, login_url='no-permission')
@@ -198,7 +180,7 @@ def assign_role(request, user_id):
         form = AssignRoleForm(request.POST)
     if form.is_valid():
         role = form.cleaned_data.get('role')
-        user.groups.clear() # Remove old roles
+        user.groups.clear()
         user.groups.add(role)
         messages.success(request, f"User {user.username} has been assigned to the {role.name} role")
         return redirect('admin-dashboard')
