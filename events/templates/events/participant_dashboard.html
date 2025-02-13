@@ -82,12 +82,12 @@
                 <li class="bg-white p-4 mb-4 rounded shadow hover:shadow-lg transition">
                     <div class="flex justify-between items-center">
                         <!-- event details -->
-                        <div>
-                            <a href="{% url 'event_detail' event.id %}" class="text-teal-600 font-bold hover:underline">
-                                <img src="{{ event.image.url }}" alt="{{ event.name }}" class="h-30 object-cover rounded-md mb-2">
-                                {{ event.name }}
-                            </a>
-                            <p class="text-gray-600">{{ event.location }} | {{ event.time }}</p>
+                        <div class="flex items-center">
+                            <img src="{{ event.event_image.url }}" alt="{{ event.name }}" class="h-10 object-cover rounded mr-4">
+                            <div>
+                              <a href="{% url 'event_detail' event.id %}" class="text-teal-600 font-bold hover:underline">{{ event.name }}</a>
+                              <p class="text-gray-600">{{ event.date }} | {{ event.time }} | {{ event.location }}</p>
+                            </div>
                         </div>
                     </div>
                 </li>
