@@ -37,16 +37,13 @@
             <ul id="mobile-menu" class="lg:hidden hidden flex-col mt-4 space-y-2 bg-teal-600 p-4">
                 <li><a href="{% url 'dashboard' %}" class="hover:underline">Dashboard</a></li>
                 <li><a href="{% url 'event_list' %}" class="hover:underline block">All Events</a></li>
-                <li><a href="{% url 'event_create' %}?next={{ request.path }}" class="bg-teal-500 text-white p-2 rounded">
-                    Create Event
-                </a></li>
                 <li><a href="{% url 'contact' %}" class="hover:underline">Contact</a></li>
                 {% if user.is_authenticated %}
                     <li><a href="{% url 'dashboard' %}" class="hover:underline">Dashboard</a></li>
-                    <li><a href="{% url 'sign-out' %}" class="bg-gray-100 text-teal-500 px-4 py-2 rounded hover:bg-white">Logout</a></li>
+                    <li style="margin:  17px 0 6px 0;"><a href="{% url 'sign-out' %}" class="bg-gray-100 text-teal-500 px-4 py-2 rounded hover:bg-white">Logout</a></li>
                 {% else %}
-                    <li><a href="{% url 'sign-in' %}" class="bg-gray-100 text-teal-500 px-4 py-2 rounded hover:bg-white">Login</a></li>
-                    <li><a href="{% url 'sign-up' %}" class="bg-blue-950 text-white px-4 py-2 rounded hover:bg-blue-900">Sign Up</a></li>
+                    <li style="margin-top: 17px;"><a href="{% url 'sign-in' %}" class="bg-gray-100 text-teal-500 px-4 py-2 rounded hover:bg-white">Login</a></li>
+                    <li style="margin: 20px 0 1px 0;><a href="{% url 'sign-up' %}" class="bg-blue-950 text-white px-4 py-2 rounded hover:bg-blue-900">Sign Up</a></li>
                 {% endif %}
             </ul>
         </nav>
