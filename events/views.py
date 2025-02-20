@@ -59,7 +59,7 @@ def event_detail(request, id):
     return render(request, 'events/event_detail.html', {'event': event})
 
 @login_required
-@user_passes_test(is_organizer, login_url='no-permission')
+@user_passes_test(is_organizer_or_admin, login_url='no-permission')
 def event_create(request):
     next_url = request.GET.get('next', 'dashboard')
     if request.method == "POST":

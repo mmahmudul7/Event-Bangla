@@ -22,6 +22,7 @@
                 <ul id="menu" class="hidden lg:flex space-x-4 items-center">
                     {% if user.is_authenticated %}
                         <li><a href="{% url 'event_list' %}" class="hover:underline block">All Events</a></li>
+                        <li><a href="{% url 'event_create' %}" class="hover:underline block">Create Event</a></li>
                         <li><a href="{% url 'user-list' %}" class="hover:underline">User List</a></li>
                         <li><a href="{% url 'category_create' %}" class="btn btn-primary">Add Category</a></li>
                         <li><a href="{% url 'group-list' %}" class="hover:underline">Group List</a></li>
@@ -39,6 +40,7 @@
             <ul id="mobile-menu" class="lg:hidden hidden flex-col mt-4 space-y-2 bg-teal-600 p-4">
                 {% if user.is_authenticated %}
                     <li><a href="{% url 'event_list' %}" class="hover:underline block">All Events</a></li>
+                    <li><a href="{% url 'event_create' %}" class="hover:underline block">Create Event</a></li>
                     <li><a href="{% url 'user-list' %}" class="hover:underline">User List</a></li>
                     <li><a href="{% url 'category_create' %}" class="btn btn-primary">Add Category</a></li>
                     <li><a href="{% url 'group-list' %}" class="hover:underline">Group List</a></li>
