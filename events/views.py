@@ -10,6 +10,11 @@ from users.views import is_admin
 from datetime import date
 from django.utils import timezone
 from django.urls import reverse
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+user = User.objects.get(username="admin")
+
 
 
 def is_organizer(user):

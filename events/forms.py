@@ -1,6 +1,7 @@
 from django import forms
 from events.models import Event, Category
 from users.forms import StyledFormMixin
+from users.models import CustomUser
 
 class EventForm(StyledFormMixin, forms.ModelForm):
     class Meta:
@@ -15,3 +16,9 @@ class CategoryForm(StyledFormMixin, forms.ModelForm):
     class Meta:
         model = Category
         fields = ['name', 'description']
+
+
+class EditProfileForm(StyledFormMixin, forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = ['email', 'first_name', 'last_name', 'bio', 'profile_image', 'phone']

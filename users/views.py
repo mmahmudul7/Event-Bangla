@@ -10,6 +10,8 @@ from events.models import Event, Category, UserProfile
 from datetime import date
 from django.utils import timezone
 from django.db.models import Count, Prefetch
+from django.views.generic import TemplateView
+
 
 # Create your views here.
 def is_admin(user):
@@ -214,3 +216,24 @@ def remove_participant(request, user_id):
         messages.error(request, "User is not a participant.")
 
     return redirect('user-list')
+
+
+# Profile View
+class ProfileView(TemplateView):
+    template_name = 'accounts/profile.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+
+        context['username'] = user.username
+        context['email'] = user.email
+        context['name'] = user.get_full_name()
+        context['phone'] = user.phone
+        context['bio'] = user.bio
+        context['profile_image'] = user.profile_image
+
+        context['member_since'] = user.date_joined
+        context['last_login'] = user.last_login
+
+        return context
