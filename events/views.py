@@ -5,7 +5,6 @@ from django.utils.timezone import now
 from django.db.models import Q, Count
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.contrib.auth.models import User
 from users.views import is_admin
 from datetime import date
 from django.utils import timezone
