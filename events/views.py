@@ -13,9 +13,6 @@ from django.urls import reverse
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
-user = User.objects.get(username="admin")
-
-
 
 def is_organizer(user):
     return user.groups.filter(name='Organizer').exists()
