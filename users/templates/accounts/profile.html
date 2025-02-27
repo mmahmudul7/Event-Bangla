@@ -1,79 +1,74 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Event Bangla - User Profile</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100">
-    <!-- Header -->
-    <header class="bg-blue-950 text-white py-4">
-        <div class="container mx-auto px-6">
-            <h1 class="text-2xl font-bold">Event Bangla</h1>
+{% extends "admin-base.html" %}
+{% load custom_filters %}
+{% block title %}Profile{% endblock title %}
+{% block admin-content %}
+
+    <div class="bg-blue-950 rounded-lg">
+        <!-- Header -->
+        <header class="bg-blue-950 text-white py-4 rounded-tl-lg rounded-tr-lg">
+            <div class="container mx-auto px-6">
+                <h1 class="text-2xl font-bold">User Profile</h1>
+            </div>
+        </header>
+
+        <div class="flex min-h-screen">
+            <!-- Sidebar -->
+            <aside class="w-64 bg-white shadow-md rounded-tr-lg rounded-bl-lg">
+                <div class="p-6">
+                    <h2 class="text-xl font-semibold text-blue-950">Menu</h2>
+                </div>
+                <nav class="mt-4">
+                    <a href="{% url 'profile' %}" class="block py-3 px-6 text-blue-950 hover:bg-teal-500 hover:text-white">Profile</a>
+                    <a href="{% url 'edit_profile' %}" class="block py-3 px-6 text-blue-950 hover:bg-teal-500 hover:text-white">Edit Profile</a>
+                    <a href="{% url 'password_change' %}" class="block py-3 px-6 text-blue-950 hover:bg-teal-500 hover:text-white">Change Password</a>
+                </nav>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="flex-1 pl-8 pr-8 pb-8">
+                <!-- <h1 class="text-3xl font-bold text-blue-950 mb-8">User Profile</h1> -->
+
+                <!-- Profile Card -->
+                <div class="bg-white shadow-md rounded-lg p-8 border border-gray-200">
+                    <!-- Profile Header -->
+                    <div class="flex flex-col md:flex-row items-center mb-8">
+                        <img src="{{profile_image.url}}" alt="User Avatar" class="w-32 h-32 rounded-full object-cover mb-4 md:mb-0 md:mr-8 border-4 border-teal-500"/>
+                        <div class="text-center md:text-left">
+                            <h2 class="text-2xl font-semibold text-blue-950"> {{ name }} </h2>
+                            <p class="text-gray-600">Django Developer</p>
+                        </div>
+                    </div>
+
+                    <!-- Grid Layout for Personal and Account Info -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                        <!-- Personal Information -->
+                        <div>
+                            <h3 class="text-lg font-semibold text-blue-950 mb-4">Personal Information</h3>
+                            <div class="space-y-2">
+                                <p class="text-gray-600"><span class="font-medium text-blue-950">Email:</span> {{ email }} </p>
+                                <p class="text-gray-600"><span class="font-medium text-blue-950">Username:</span> {{username}} </p>
+                                <p class="text-gray-600"><span class="font-medium text-blue-950">Location:</span> Rashahi, Bangladesh</p>
+                                <p class="text-gray-600"><span class="font-medium text-blue-950">Phone:</span> {{phone}} </p>
+                            </div>
+                        </div>
+
+                        <!-- Account Information -->
+                        <div>
+                            <h3 class="text-lg font-semibold text-blue-950 mb-4">Account Information</h3>
+                            <div class="space-y-2">
+                                <p class="text-gray-600"><span class="font-medium text-blue-950">Member Since:</span> {{member_since|humanized_date}} </p>
+                                <p class="text-gray-600"><span class="font-medium text-blue-950">Last Login:</span> {{last_login|humanized_date}} </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bio Section -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-blue-950 mb-4">Bio</h3>
+                        <p class="text-gray-600"> {{bio}} </p>
+                    </div>
+                </div>
+            </main>
         </div>
-    </header>
-
-    <div class="flex min-h-screen">
-        <!-- Sidebar -->
-        <aside class="w-64 bg-white shadow-md">
-            <div class="p-6">
-                <h2 class="text-xl font-semibold text-blue-950">Menu</h2>
-            </div>
-            <nav class="mt-4">
-                <a href="#" class="block py-3 px-6 text-blue-950 hover:bg-teal-500 hover:text-white">Profile</a>
-                <a href="#" class="block py-3 px-6 text-blue-950 hover:bg-teal-500 hover:text-white">Edit Profile</a>
-                <a href="#" class="block py-3 px-6 text-blue-950 hover:bg-teal-500 hover:text-white">Change Password</a>
-            </nav>
-        </aside>
-
-        <!-- Main Content -->
-        <main class="flex-1 p-8">
-            <h1 class="text-3xl font-bold text-blue-950 mb-8">User Profile</h1>
-
-            <!-- Profile Card -->
-            <div class="bg-white shadow-md rounded-lg p-8 border border-gray-200">
-                <!-- Profile Header -->
-                <div class="flex flex-col md:flex-row items-center mb-8">
-                    <img src="https://onesix.dev/media/admin.jpg" alt="User Avatar" class="w-32 h-32 rounded-full object-cover mb-4 md:mb-0 md:mr-8 border-4 border-teal-500"/>
-                    <div class="text-center md:text-left">
-                        <h2 class="text-2xl font-semibold text-blue-950">MD Mahmudul Hasan</h2>
-                        <p class="text-gray-600">Django Developer</p>
-                    </div>
-                </div>
-
-                <!-- Grid Layout for Personal and Account Info -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                    <!-- Personal Information -->
-                    <div>
-                        <h3 class="text-lg font-semibold text-blue-950 mb-4">Personal Information</h3>
-                        <div class="space-y-2">
-                            <p class="text-gray-600"><span class="font-medium text-blue-950">Email:</span> admin@onesix.dev</p>
-                            <p class="text-gray-600"><span class="font-medium text-blue-950">Username:</span> admin</p>
-                            <p class="text-gray-600"><span class="font-medium text-blue-950">Location:</span> Rashahi, Bangladesh</p>
-                            <p class="text-gray-600"><span class="font-medium text-blue-950">Phone:</span> +88 (017) 560-0340</p>
-                        </div>
-                    </div>
-
-                    <!-- Account Information -->
-                    <div>
-                        <h3 class="text-lg font-semibold text-blue-950 mb-4">Account Information</h3>
-                        <div class="space-y-2">
-                            <p class="text-gray-600"><span class="font-medium text-blue-950">Member Since:</span> January 2020</p>
-                            <p class="text-gray-600"><span class="font-medium text-blue-950">Last Login:</span> 2 hours ago</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Bio Section -->
-                <div>
-                    <h3 class="text-lg font-semibold text-blue-950 mb-4">Bio</h3>
-                    <p class="text-gray-600">
-                        I am an enthusiastic Python developer with knowing some framework for the frontend and the backend. I know Basic C, C++ and MySQL but basically a Django developer.
-                    </p>
-                </div>
-            </div>
-        </main>
     </div>
-</body>
-</html>
+{% endblock admin-content %}
