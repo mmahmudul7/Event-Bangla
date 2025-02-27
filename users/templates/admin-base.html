@@ -21,6 +21,7 @@
                 <!-- Navbar Links -->
                 <ul id="menu" class="hidden lg:flex space-x-4 items-center">
                     {% if user.is_authenticated %}
+                        <li><a href="{% url 'dashboard' %}" class="hover:underline">Dashboard</a></li>
                         <li><a href="{% url 'event_list' %}" class="hover:underline block">All Events</a></li>
                         <li><a href="{% url 'event_create' %}" class="hover:underline block">Create Event</a></li>
                         <li><a href="{% url 'user-list' %}" class="hover:underline">User List</a></li>
@@ -28,8 +29,7 @@
                         <li><a href="{% url 'group-list' %}" class="hover:underline">Group List</a></li>
                         <li><a href="{% url 'create-group' %}" class="hover:underline">Create Group</a></li>
                         <li><a href="{% url 'profile' %}" class="hover:underline">Profile </a></li>
-                        <li><a href="{% url 'dashboard' %}" class="hover:underline">Dashboard</a></li>
-                        <li><button id="user-menu-button" class="flex items-center focus:outline-none"><img class="h-8 w-8 rounded-full object-cover" src="{{profile_image.url}}" alt="User avatar"/></button></li>
+                        <li><button id="user-menu-button" class="flex items-center focus:outline-none"><img class="h-8 w-8 rounded-full object-cover" src="{{profile_image.url}}" alt="avatar"/></button></li>
                         <li><a href="{% url 'sign-out' %}" class="bg-gray-100 text-teal-500 px-4 py-2 rounded hover:bg-white">Logout</a></li>
                     {% else %}
                         <li><a href="{% url 'sign-in' %}" class="bg-gray-100 text-teal-500 px-4 py-2 rounded hover:bg-white">Login</a></li>
@@ -41,13 +41,15 @@
             <!-- Mobile Menu -->
             <ul id="mobile-menu" class="lg:hidden hidden flex-col mt-4 space-y-2 bg-teal-600 p-4">
                 {% if user.is_authenticated %}
+                    <li><a href="{% url 'dashboard' %}" class="hover:underline">Dashboard</a></li>
                     <li><a href="{% url 'event_list' %}" class="hover:underline block">All Events</a></li>
                     <li><a href="{% url 'event_create' %}" class="hover:underline block">Create Event</a></li>
                     <li><a href="{% url 'user-list' %}" class="hover:underline">User List</a></li>
                     <li><a href="{% url 'category_create' %}" class="btn btn-primary">Add Category</a></li>
                     <li><a href="{% url 'group-list' %}" class="hover:underline">Group List</a></li>
                     <li><a href="{% url 'create-group' %}" class="hover:underline">Create Group</a></li>
-                    <li><a href="{% url 'dashboard' %}" class="hover:underline">Dashboard</a></li>
+                    <li><a href="{% url 'profile' %}" class="hover:underline">Profile </a></li>
+                    <li><button id="user-menu-button" class="flex items-center focus:outline-none"><img class="h-8 w-8 rounded-full object-cover" src="{{profile_image.url}}" alt="avatar"/></button></li>
                     <li style="margin:  17px 0 6px 0;"><a href="{% url 'sign-out' %}" class="bg-gray-100 text-teal-500 px-4 py-2 rounded hover:bg-white">Logout</a></li>
                 {% else %}
                     <li><a href="{% url 'sign-in' %}" class="bg-gray-100 text-teal-500 px-4 py-2 rounded hover:bg-white">Login</a></li>
@@ -68,7 +70,7 @@
             </div>
         {% endif %}
 
-        {% block admin-content %}
+        {% block content %}
         <!-- Content will be inserted here from child templates -->
         {% endblock %}
     </div>

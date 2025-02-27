@@ -25,6 +25,10 @@
 
                     {% if user.is_authenticated %}
                         <li><a href="{% url 'dashboard' %}" class="hover:underline">Dashboard</a></li>
+                        <li><a href="{% url 'event_list' %}" class="hover:underline block">All Events</a></li>
+                        <li><a href="{% url 'contact' %}" class="hover:underline">Contact</a></li>
+                        <li><a href="{% url 'profile' %}" class="hover:underline">Profile </a></li>
+                        <li><button id="user-menu-button" class="flex items-center focus:outline-none"><img class="h-8 w-8 rounded-full object-cover" src="{{profile_image.url}}" alt="avatar"/></button></li>
                         <li><a href="{% url 'sign-out' %}" class="bg-gray-100 text-teal-500 px-4 py-2 rounded hover:bg-white">Logout</a></li>
                     {% else %}
                         <li><a href="{% url 'sign-in' %}" class="bg-gray-100 text-teal-500 px-4 py-2 rounded hover:bg-white">Login</a></li>
@@ -40,6 +44,10 @@
                 <li><a href="{% url 'contact' %}" class="hover:underline">Contact</a></li>
                 {% if user.is_authenticated %}
                     <li><a href="{% url 'dashboard' %}" class="hover:underline">Dashboard</a></li>
+                    <li><a href="{% url 'event_list' %}" class="hover:underline block">All Events</a></li>
+                    <li><a href="{% url 'contact' %}" class="hover:underline">Contact</a></li>
+                    <li><a href="{% url 'profile' %}" class="hover:underline">Profile </a></li>
+                    <li><button id="user-menu-button" class="flex items-center focus:outline-none"><img class="h-8 w-8 rounded-full object-cover" src="{{profile_image.url}}" alt="avatar"/></button></li>
                     <li style="margin:  17px 0 6px 0;"><a href="{% url 'sign-out' %}" class="bg-gray-100 text-teal-500 px-4 py-2 rounded hover:bg-white">Logout</a></li>
                 {% else %}
                     <li style="margin-top: 17px;"><a href="{% url 'sign-in' %}" class="bg-gray-100 text-teal-500 px-4 py-2 rounded hover:bg-white">Login</a></li>
