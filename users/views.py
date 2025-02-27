@@ -275,8 +275,6 @@ class CustomPasswordResetView(PasswordResetView):
         context = super().get_context_data(**kwargs)
         context['protocol'] = 'https' if self.request.is_secure() else 'http'
         context['domain'] = self.request.get_host()
-        context['profile_image'] = self.request.user.profile_image
-        # print(context)
         return context
 
     def form_valid(self, form):

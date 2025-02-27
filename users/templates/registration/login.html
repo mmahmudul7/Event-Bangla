@@ -6,5 +6,8 @@
             {{ form }}
             <button type="submit" class='w-full bg-teal-500 hover:bg-teal-600 px-4 py-2 rounded text-white mt-3 transition duration-300'>Sign In</button>
         </form>
+        <div class="mt-4 text-center">
+            <a href="{% url 'password_reset' %}" class="text-blue-950 hover:text-blue-900">Forgot your password ?</a>
+        </div>
     </div>
 {% endblock %}
