@@ -11,7 +11,7 @@ from django.utils import timezone
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth import get_user_model
 from django.utils.decorators import method_decorator
-from django.views.generic import CreateView, UpdateView, DeleteView
+from django.views.generic import CreateView, UpdateView, DeleteView, ListView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 
@@ -164,70 +164,67 @@ def participant_list(request):
     participants = User.objects.filter(rsvp_events__isnull=False).distinct().order_by('username')  
     return render(request, 'events/participant_list.html', {'participants': participants})
 
-    
-# Organzer dashboard 
-@login_required
-@user_passes_test(is_organizer, login_url='no-permission')
-def organizer_dashboard(request):    
-    today = timezone.now().date()
 
-    events = Event.objects.select_related('category').prefetch_related('participants').all()
-    today_events = events.filter(date=today)
-    myEvents = Event.objects.filter(organizer=request.user)
+# Oranizer Dashboard View
+class OrganizerDashboard(LoginRequiredMixin, UserPassesTestMixin, ListView):
+    model = Event
+    template_name = "events/organizer_dashboard.html"
+    context_object_name = "events"
 
-    total_participants = User.objects.filter(rsvp_events__isnull=False).distinct().count()
-    # total_participants = Event.objects.aggregate(total=Count('participants', distinct=True))['total'] or 0
-    total_events = Event.objects.count()
-    total_upcoming_events = Event.objects.filter(date__gte=timezone.now()).count()
-    total_past_events = Event.objects.filter(date__lt=timezone.now()).count()
+    def test_func(self):
+        # return self.request.user.is_authenticated and self.request.user.is_organizer
+        # return self.request.user.is_authenticated and self.request.user.role == "organizer"
+        return self.request.user.is_authenticated and getattr(self.request.user, 'userprofile', None) and self.request.user.userprofile.role == "organizer"
 
-    # events = Event.objects.select_related('category').all()
-    filter = request.GET.get('filter', None)
-    category = request.GET.get('category', None)
-    filter_title = "Today's Events"
-    filtered_events = today_events
-
-    if not filter:
+    def get_queryset(self):
         today = timezone.now().date()
+        events = Event.objects.select_related("category").prefetch_related("participants").all()
         filtered_events = events.filter(date=today)
         filter_title = "Today's Events"
 
-    if filter == 'upcoming_events':
-        filtered_events = events.filter(date__gte=timezone.now())
-        filter_title = "Upcoming Events"
-    elif filter == 'past_events':
-        filtered_events = events.filter(date__lt=timezone.now())
-        filter_title = "Past Events"
-    elif filter == 'total_events':
-        filtered_events = events
-        filter_title = "All Events"
-    
-    if category:
-        filtered_events = events.filter(category__name=category)
-        filter_title = f"Events in {category} Category"
+        # Apply filters
+        filter = self.request.GET.get("filter")
+        category = self.request.GET.get("category")
+        start_date = self.request.GET.get("start_date")
+        end_date = self.request.GET.get("end_date")
 
-    start_date = request.GET.get('start_date')
-    end_date = request.GET.get('end_date')
-    if start_date and end_date:
-        filtered_events = events.filter(date__range=[start_date, end_date])
-        filter_title = f"Events from {start_date} to {end_date}"
+        if filter == "upcoming_events":
+            filtered_events = events.filter(date__gte=timezone.now())
+            filter_title = "Upcoming Events"
+        elif filter == "past_events":
+            filtered_events = events.filter(date__lt=timezone.now())
+            filter_title = "Past Events"
+        elif filter == "total_events":
+            filtered_events = events
+            filter_title = "All Events"
 
-    categories = Category.objects.all()
-    context = {
-        'total_participants': total_participants,
-        'total_events': total_events,
-        'total_upcoming_events': total_upcoming_events,
-        'total_past_events': total_past_events,
-        'events': events,
-        'filtered_events': filtered_events,
-        'categories': categories,
-        'start_date': start_date,
-        'end_date': end_date,
-        'filter_title': filter_title,
-        'today_events': today_events,
-        'myEvents': myEvents,
-    }
-    return render(request, 'events/organizer_dashboard.html', context)
+        if category:
+            filtered_events = events.filter(category__name=category)
+            filter_title = f"Events in {category} Category"
+
+        if start_date and end_date:
+            filtered_events = events.filter(date__range=[start_date, end_date])
+            filter_title = f"Events from {start_date} to {end_date}"
+
+        self.filter_title = filter_title
+        return filtered_events
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        today = timezone.now().date()
+
+        context["total_participants"] = User.objects.filter(rsvp_events__isnull=False).distinct().count()
+        context["total_events"] = Event.objects.count()
+        context["total_upcoming_events"] = Event.objects.filter(date__gte=timezone.now()).count()
+        context["total_past_events"] = Event.objects.filter(date__lt=timezone.now()).count()
+        context["filtered_events"] = self.get_queryset()
+        context["categories"] = Category.objects.all()
+        context["filter_title"] = self.filter_title
+        context["today_events"] = Event.objects.filter(date=today)
+        context["myEvents"] = Event.objects.filter(organizer=self.request.user)
+
+        return context
+
 
 # Paticipant dashbaord 
 @login_required
