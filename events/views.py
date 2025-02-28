@@ -292,29 +292,27 @@ def participant_dashboard(request):
     return render(request, 'events/participant_dashboard.html', context)
 
 
-@login_required
-@user_passes_test(is_organizer_or_admin, login_url='no-permission')
-def category_create(request):
-    if not (request.user.is_superuser or request.user.groups.filter(name="Organizer").exists()):
-        messages.error(request, "You are not authorized to create a category.")
+# Create Category View 
+class CategoryCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+    model = Category
+    form_class = CategoryForm
+    template_name = "events/category_form.html"
+    success_url = reverse_lazy("dashboard")
+
+    def test_func(self):
+        return self.request.user.is_superuser or self.request.user.groups.filter(name="Organizer").exists()
+
+    def form_valid(self, form):
+        category = form.save(commit=False)
+        if self.request.user.groups.filter(name="Organizer").exists():
+            category.organizer = self.request.user
+        category.save()
+        messages.success(self.request, "Category created successfully!")
+        return super().form_valid(form)
+
+    def handle_no_permission(self):
+        messages.error(self.request, "You are not authorized to create a category.")
         return redirect("dashboard")
-
-    if request.method == "POST":
-        form = CategoryForm(request.POST)
-        if form.is_valid():
-            category = form.save(commit=False)
-
-            if request.user.groups.filter(name="Organizer").exists():
-                category.organizer = request.user
-            
-            category.save()
-            messages.success(request, "Category created successfully!")
-            return redirect("dashboard")
-    else:
-        form = CategoryForm()
-    
-    return render(request, "events/category_form.html", {"form": form})
-
 
 
 @login_required
@@ -352,4 +350,3 @@ def category_delete(request, id):
     else:
         messages.error(request, 'You are not authorized to delete this category.')
         return redirect('dashboard')
-    
