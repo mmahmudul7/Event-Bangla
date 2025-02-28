@@ -1,9 +1,9 @@
+import dj_database_url
 import os
 from pathlib import Path
 from decouple import config
 
 # Import dj-database-url at the beginning of the file.
-# import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -77,21 +77,21 @@ WSGI_APPLICATION = 'event_management.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
 # Replace the SQLite DATABASES configuration with PostgreSQL:
-# DATABASES = {
-#     'default': dj_database_url.config(
-#         # Replace this value with your local database's connection string.
-#         default='postgresql://v2_events_bangla_db_user:vzfTXICPv8UedYonVHQs80C7vnCHMGTA@dpg-culrmsq3esus73dfkh2g-a.oregon-postgres.render.com/v2_events_bangla_db',
-#         conn_max_age=600
-#     )
-# }
+DATABASES = {
+    'default': dj_database_url.config(
+        # Replace this value with your local database's connection string.
+        default='postgresql://eventbangla_db_user:OqnuLBCoBWNpD66EjSg6Twmo7mQm6u60@dpg-cv11nstsvqrc73f82qcg-a.oregon-postgres.render.com/eventbangla_db',
+        conn_max_age=600
+    )
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -146,8 +146,8 @@ EMAIL_PORT = config('EMAIL_PORT')
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 
-FRONTEND_URL = 'http://127.0.0.1:8000'
-# FRONTEND_URL = 'https://event-bangla-v2.onrender.com'
+# FRONTEND_URL = 'http://127.0.0.1:8000'
+FRONTEND_URL = 'https://eventbangla.onrender.com'
 
 LOGIN_URL = 'sign-in'
 LOGIN_REDIRECT_URL = '/dashboard/'
