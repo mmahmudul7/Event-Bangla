@@ -93,17 +93,18 @@ WSGI_APPLICATION = 'event_management.wsgi.application'
 #     )
 # }
 
+
+#  For Postgres 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'eventbangla_db',
-        'USER': 'eventbangla_db_user',
-        'PASSWORD': 'OqnuLBCoBWNpD66EjSg6Twmo7mQm6u60',
-        'HOST': 'dpg-cv11nstsvqrc73f82qcg-a.oregon-postgres.render.com',
-        'PORT': '5432',
+        'NAME': config('DB_NAME', default=''),
+        'USER': config('DB_USER', default=''),
+        'PASSWORD': config('DB_PASSWORD', default=''),
+        'HOST': config('DB_HOST', default='localhost'),
+        'PORT': config('DB_PORT',  default='', cast=int)
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
