@@ -153,3 +153,4 @@ LOGIN_URL = 'sign-in'
 LOGIN_REDIRECT_URL = '/dashboard/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
