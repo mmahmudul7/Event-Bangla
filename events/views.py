@@ -13,6 +13,7 @@ from django.contrib.auth import get_user_model
 from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, UpdateView, DeleteView, ListView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.http import HttpResponseForbidden
 
 
 User = get_user_model()
@@ -166,14 +167,17 @@ def participant_list(request):
 
 
 # Oranizer Dashboard View
-class OrganizerDashboard(LoginRequiredMixin, UserPassesTestMixin, ListView):
+class OrganizerDashboard(ListView):
     model = Event
     template_name = "events/organizer_dashboard.html"
     context_object_name = "events"
 
-    def test_func(self):
-        user_profile = getattr(self.request.user, 'userprofile', None)
-        return self.request.user.is_authenticated and user_profile and user_profile.role == "organizer"
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('login')
+        if not is_organizer(request.user):
+            return HttpResponseForbidden("You do not have permission to access this page.")
+        return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
         today = timezone.now().date()
