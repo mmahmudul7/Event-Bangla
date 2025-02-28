@@ -3,15 +3,6 @@
 {% block content %}
     <div class="max-w-7xl mx-auto py-6">
         <h1 class="text-3xl font-bold text-blue-950 border-b-2 border-teal-500 pb-3 mb-5">User List</h1>
-
-        {% if messages %}
-            {% for message in messages %}
-                <div class="mb-4 p-3 text-white rounded-md {% if message.tags == 'success' %}bg-green-500{% else %}bg-red-500{% endif %}">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endif %}
-
         <div class="overflow-x-auto bg-white p-4 rounded-lg shadow-lg border border-gray-200">
             <table class="min-w-full border-collapse rounded-lg">
                 <thead>

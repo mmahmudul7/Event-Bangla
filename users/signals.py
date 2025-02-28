@@ -1,11 +1,13 @@
 from django.dispatch import receiver
-from django.db.models.signals import post_save, m2m_changed
+from django.db.models.signals import post_save, m2m_changed, pre_save
 from django.contrib.auth.models import Group
 from django.contrib.auth.tokens import default_token_generator
 from django.conf import settings
 from django.core.mail import send_mail
 from events.models import Event, UserProfile
 from django.contrib.auth import get_user_model
+from .models import CustomUser
+
 
 User = get_user_model()
 
@@ -54,3 +56,9 @@ def update_user_role(sender, instance, created, **kwargs):
         if user_profile.role == 'participant':
             user_profile.role = 'organizer'
             user_profile.save()
+
+
+@receiver(pre_save, sender=CustomUser)
+def set_default_profile_image(sender, instance, **kwargs):
+    if not instance.profile_image:
+        instance.profile_image = 'profile_images/default.png'
