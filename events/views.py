@@ -10,6 +10,9 @@ from datetime import date
 from django.utils import timezone
 from django.urls import reverse
 from django.contrib.auth import get_user_model
+from django.utils.decorators import method_decorator
+from django.views.generic import CreateView
+
 
 User = get_user_model()
 
@@ -59,22 +62,35 @@ def event_detail(request, id):
 
     return render(request, 'events/event_detail.html', {'event': event})
 
-@login_required
-@user_passes_test(is_organizer_or_admin, login_url='no-permission')
-def event_create(request):
-    next_url = request.GET.get('next', 'dashboard')
-    if request.method == "POST":
-        form = EventForm(request.POST, request.FILES)
-        if form.is_valid():
-            event = form.save(commit=False)
-            event.organizer = request.user
-            event.save()
-            form.save_m2m()
-            messages.success(request, 'Event created successfully!')
-            return redirect(next_url)
-    else:
-        form = EventForm()
-    return render(request, 'events/event_form.html', {'form': form, 'next_url': next_url})
+
+# Admin and Organizer Decorator
+admin_and_organizer_decorators = [
+    login_required,
+    user_passes_test(is_organizer_or_admin, login_url='no-permission')
+]
+
+@method_decorator(admin_and_organizer_decorators, name='dispatch')
+class EventCreate(CreateView):
+    model = Event
+    form_class = EventForm
+    template_name = 'events/event_form.html'
+
+    def get_success_url(self):
+        return self.request.GET.get('next', 'dashboard')
+
+    def form_valid(self, form):
+        event = form.save(commit=False)
+        event.organizer = self.request.user
+        event.save()
+        form.save_m2m()
+        messages.success(self.request, 'Event created successfully!')
+        return redirect(self.get_success_url())
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['next_url'] = self.get_success_url()
+        return context
+
 
 @login_required
 @user_passes_test(is_organizer_or_admin, login_url='no-permission')
@@ -107,7 +123,6 @@ def event_delete(request, id):
     return render(request, 'events/event_confirm_delete.html', {'event': event})
 
 
-# @login_required
 def contact_page(request):
     if request.method == "POST":
         name = request.POST.get('name')
