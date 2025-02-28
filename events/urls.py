@@ -1,15 +1,13 @@
 from django.urls import path
 from events import views
-from django.conf import settings
-from django.conf.urls.static import static
-from events.views import event_list, event_detail, event_create, event_update, event_delete, event_rsvp, participant_list, contact_page, organizer_dashboard, participant_dashboard, category_create, category_update, category_delete, EventCreate
+from events.views import event_list, event_detail, event_delete, event_rsvp, participant_list, contact_page, organizer_dashboard, participant_dashboard, category_create, category_update, category_delete, EventCreate, EventUpdate
 
 
 urlpatterns = [
     path('', event_list, name='event_list'),  # Event list page
     path('events/<int:id>/', event_detail, name='event_detail'),
     path('events/create/', EventCreate.as_view(), name='event_create'),
-    path('events/<int:id>/update/', event_update, name='event_update'),
+    path('events/<int:id>/update/', EventUpdate.as_view(), name='event_update'),
     path('events/<int:id>/delete/', event_delete, name='event_delete'),
     path('events/<int:id>/rsvp/', event_rsvp, name='event_rsvp'),
     path('participants/', participant_list, name='participant_list'),
@@ -22,5 +20,3 @@ urlpatterns = [
 
 ]
 
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

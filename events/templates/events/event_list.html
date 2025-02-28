@@ -32,7 +32,7 @@
             <div class="event-card bg-white shadow-lg rounded overflow-hidden">
                 <!-- Event Image -->
                 {% if event.event_image %}
-                    <img src="{{ event.event_image.url }}" alt="{{ event.name }}" class="w-full h-40 object-cover">
+                    <img src="{{ event.get_event_image }}" alt="{{ event.name }}" class="w-full h-40 object-cover">
                 {% else %}
                     <div class="w-full h-40 bg-gray-300 flex items-center justify-center text-gray-500 italic">
                         No Image Available

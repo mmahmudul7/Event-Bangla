@@ -37,6 +37,12 @@ class Event(models.Model):
     location = models.CharField(max_length=255)
     category = models.ForeignKey(Category, related_name='events', on_delete=models.CASCADE)
     event_image = models.ImageField(upload_to='event_images/', blank=True, null=True, default='event_images/default.jpg')
+
+    def get_event_image(self):
+        if self.event_image:
+            return self.event_image.url
+        return f'{settings.MEDIA_URL}event_images/default.jpg'
+
     organizer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='organized_events')
     participants = models.ManyToManyField(User, related_name='rsvp_events', blank=True)
 

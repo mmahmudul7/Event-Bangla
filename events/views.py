@@ -11,7 +11,7 @@ from django.utils import timezone
 from django.urls import reverse
 from django.contrib.auth import get_user_model
 from django.utils.decorators import method_decorator
-from django.views.generic import CreateView
+from django.views.generic import CreateView, UpdateView
 
 
 User = get_user_model()
@@ -69,6 +69,7 @@ admin_and_organizer_decorators = [
     user_passes_test(is_organizer_or_admin, login_url='no-permission')
 ]
 
+# Event Create Views
 @method_decorator(admin_and_organizer_decorators, name='dispatch')
 class EventCreate(CreateView):
     model = Event
@@ -92,22 +93,31 @@ class EventCreate(CreateView):
         return context
 
 
-@login_required
-@user_passes_test(is_organizer_or_admin, login_url='no-permission')
-def event_update(request, id):
-    event = get_object_or_404(Event, id=id)
-    if request.user != event.organizer and not request.user.is_superuser:
-        messages.error(request, "You are not authorized to edit this event.")
-        return redirect('dashboard')
-    if request.method == 'POST':
-        form = EventForm(request.POST, request.FILES, instance=event)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Event updated successfully!')
-            return redirect('event_detail', id=event.id)
-    else:
-        form = EventForm(instance=event)
-    return render(request, 'events/event_form.html', {'form': form})
+# Admin and Organizer Decorator
+admin_and_organizer_decorators = [
+    login_required,
+    user_passes_test(is_organizer_or_admin, login_url='no-permission')
+]
+# Event Update View
+@method_decorator(admin_and_organizer_decorators, name='dispatch')
+class EventUpdate(UpdateView):
+    model = Event
+    form_class = EventForm
+    template_name = 'events/event_form.html'
+    pk_url_kwarg = 'id'
+
+    def dispatch(self, request, *args, **kwargs):
+        event = self.get_object()
+        if request.user != event.organizer and not request.user.is_superuser:
+            messages.error(request, "You are not authorized to edit this event.")
+            return redirect('dashboard')
+        return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        self.object = form.save()
+        messages.success(self.request, 'Event updated successfully!')
+        return redirect(reverse('event_detail', kwargs={'id': self.object.id}))
+
 
 @login_required
 @user_passes_test(is_organizer_or_admin, login_url='no-permission')
