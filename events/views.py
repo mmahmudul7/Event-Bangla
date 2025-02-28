@@ -8,10 +8,11 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from users.views import is_admin
 from datetime import date
 from django.utils import timezone
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.contrib.auth import get_user_model
 from django.utils.decorators import method_decorator
-from django.views.generic import CreateView, UpdateView
+from django.views.generic import CreateView, UpdateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 
 User = get_user_model()
@@ -93,11 +94,6 @@ class EventCreate(CreateView):
         return context
 
 
-# Admin and Organizer Decorator
-admin_and_organizer_decorators = [
-    login_required,
-    user_passes_test(is_organizer_or_admin, login_url='no-permission')
-]
 # Event Update View
 @method_decorator(admin_and_organizer_decorators, name='dispatch')
 class EventUpdate(UpdateView):
@@ -119,18 +115,23 @@ class EventUpdate(UpdateView):
         return redirect(reverse('event_detail', kwargs={'id': self.object.id}))
 
 
-@login_required
-@user_passes_test(is_organizer_or_admin, login_url='no-permission')
-def event_delete(request, id):
-    event = get_object_or_404(Event, id=id)
-    if request.user != event.organizer and not request.user.is_superuser:
-        messages.error(request, "You are not authorized to delete this event.")
+# Event Delete View
+class EventDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Event
+    template_name = 'events/event_confirm_delete.html'
+    success_url = reverse_lazy('dashboard')
+
+    def test_func(self):
+        event = get_object_or_404(Event, id=self.kwargs['pk'])
+        return self.request.user == event.organizer or self.request.user.is_superuser
+
+    def handle_no_permission(self):
+        messages.error(self.request, "You are not authorized to delete this event.")
         return redirect('dashboard')
-    if request.method == 'POST':
-        event.delete()
-        messages.success(request, 'Event deleted successfully!')
-        return redirect('dashboard')
-    return render(request, 'events/event_confirm_delete.html', {'event': event})
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, "Event deleted successfully!")
+        return super().delete(request, *args, **kwargs)
 
 
 def contact_page(request):
