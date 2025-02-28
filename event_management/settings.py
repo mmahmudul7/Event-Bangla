@@ -85,13 +85,25 @@ WSGI_APPLICATION = 'event_management.wsgi.application'
 # }
 
 # Replace the SQLite DATABASES configuration with PostgreSQL:
+# DATABASES = {
+#     'default': dj_database_url.config(
+#         # Replace this value with your local database's connection string.
+#         default='postgresql://eventbangla_db_user:OqnuLBCoBWNpD66EjSg6Twmo7mQm6u60@dpg-cv11nstsvqrc73f82qcg-a.oregon-postgres.render.com/eventbangla_db',
+#         conn_max_age=600
+#     )
+# }
+
 DATABASES = {
-    'default': dj_database_url.config(
-        # Replace this value with your local database's connection string.
-        default='postgresql://eventbangla_db_user:OqnuLBCoBWNpD66EjSg6Twmo7mQm6u60@dpg-cv11nstsvqrc73f82qcg-a.oregon-postgres.render.com/eventbangla_db',
-        conn_max_age=600
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'eventbangla_db',
+        'USER': 'eventbangla_db_user',
+        'PASSWORD': 'OqnuLBCoBWNpD66EjSg6Twmo7mQm6u60',
+        'HOST': 'dpg-cv11nstsvqrc73f82qcg-a.oregon-postgres.render.com',
+        'PORT': '5432',
+    }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -153,4 +165,3 @@ LOGIN_URL = 'sign-in'
 LOGIN_REDIRECT_URL = '/dashboard/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
