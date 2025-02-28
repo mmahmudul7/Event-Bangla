@@ -172,7 +172,8 @@ class OrganizerDashboard(LoginRequiredMixin, UserPassesTestMixin, ListView):
     context_object_name = "events"
 
     def test_func(self):
-        return self.request.user.is_authenticated and getattr(self.request.user, 'userprofile', None) and self.request.user.userprofile.role == "organizer"
+        user_profile = getattr(self.request.user, 'userprofile', None)
+        return self.request.user.is_authenticated and user_profile and user_profile.role == "organizer"
 
     def get_queryset(self):
         today = timezone.now().date()
