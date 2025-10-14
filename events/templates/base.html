@@ -1,103 +1,188 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Event Bangla</title>
     <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100">
+  </head>
+  <body class="bg-gray-100">
     <header>
-        <!-- Navbar -->
-        <nav class="bg-teal-500 text-white p-4">
-            <div class="container mx-auto flex justify-between items-center">
-                <!-- Logo -->
-                <a href="{% url 'event_list' %}" class="text-xl font-bold">Event Bangla</a>
-                <!-- Mobile Menu Button -->
-                <button id="menu-btn" class="lg:hidden block text-white focus:outline-none">
-                    ☰
+      <!-- Navbar -->
+      <nav class="bg-teal-500 text-white p-4">
+        <div class="container mx-auto flex justify-between items-center">
+          <!-- Logo -->
+          <a href="{% url 'event_list' %}" class="text-xl font-bold"
+            >Event Bangla</a
+          >
+          <!-- Mobile Menu Button -->
+          <button
+            id="menu-btn"
+            class="lg:hidden block text-white focus:outline-none"
+          >
+            ☰
+          </button>
+          <!-- Navbar Links -->
+          <ul id="menu" class="hidden lg:flex space-x-4 items-center">
+            {% if user.is_authenticated %}
+            <li>
+              <a href="{% url 'dashboard' %}" class="hover:underline"
+                >Dashboard</a
+              >
+            </li>
+            <li>
+              <a href="{% url 'event_list' %}" class="hover:underline block"
+                >All Events</a
+              >
+            </li>
+            <li>
+              <a href="{% url 'contact' %}" class="hover:underline">Contact</a>
+            </li>
+            <li>
+              <a href="{% url 'profile' %}" class="hover:underline">Profile </a>
+            </li>
+            <li>
+              <a href="{% url 'profile' %}">
+                <button
+                  id="user-menu-button"
+                  class="flex items-center focus:outline-none hover:bg-teal-600 transition duration-300 ease-in-out focus:ring-2 focus:ring-teal-400 focus:ring-opacity-50"
+                >
+                  <img
+                    class="h-8 w-8 rounded-full object-cover"
+                    src="{% if request.user.profile_image %}{{ request.user.profile_image.url }}{% else %}/media/profile_images/default.png{% endif %}"
+                    alt="avatar"
+                  />
                 </button>
-                <!-- Navbar Links -->
-                <ul id="menu" class="hidden lg:flex space-x-4 items-center">
-                    {% if user.is_authenticated %}
-                        <li><a href="{% url 'dashboard' %}" class="hover:underline">Dashboard</a></li>
-                        <li><a href="{% url 'event_list' %}" class="hover:underline block">All Events</a></li>
-                        <li><a href="{% url 'contact' %}" class="hover:underline">Contact</a></li>
-                        <li><a href="{% url 'profile' %}" class="hover:underline">Profile </a></li>
-                        <li>
-                            <a href="{% url 'profile' %}">
-                                <button id="user-menu-button" class="flex items-center focus:outline-none hover:bg-teal-600 transition duration-300 ease-in-out focus:ring-2 focus:ring-teal-400 focus:ring-opacity-50">
-                                    <img class="h-8 w-8 rounded-full object-cover" 
-                                        src="{% if request.user.profile_image %}{{ request.user.profile_image.url }}{% else %}/media/profile_images/default.png{% endif %}" 
-                                        alt="avatar"/>
-                                </button>
-                            </a>
-                        </li>
-
-                    {% else %}
-                        <li><a href="{% url 'event_list' %}" class="hover:underline">All Events</a></li>
-                        <li><a href="{% url 'contact' %}" class="hover:underline">Contact</a></li>
-                        <li><a href="{% url 'sign-in' %}" class="bg-gray-100 text-teal-500 px-4 py-2 rounded hover:bg-white">Login</a></li>
-                        <li><a href="{% url 'sign-up' %}" class="bg-blue-950 text-white px-4 py-2 rounded hover:bg-blue-900">Sign Up</a></li>
-                    {% endif %}
-                </ul>
-
-            </div>
-            <!-- Mobile Menu -->
-            <ul id="mobile-menu" class="lg:hidden hidden flex-col mt-4 space-y-2 bg-teal-600 p-4">                
-                {% if user.is_authenticated %}
-                    <li><a href="{% url 'dashboard' %}" class="hover:underline">Dashboard</a></li>
-                    <li><a href="{% url 'event_list' %}" class="hover:underline block">All Events</a></li>
-                    <li><a href="{% url 'contact' %}" class="hover:underline">Contact</a></li>
-                    <li><a href="{% url 'profile' %}" class="hover:underline">Profile </a></li>
-                    <li>
-                        <a href="{% url 'profile' %}">
-                            <button id="user-menu-button" class="flex items-center focus:outline-none hover:bg-teal-600 transition duration-300 ease-in-out focus:ring-2 focus:ring-teal-400 focus:ring-opacity-50">
-                                <img class="h-8 w-8 rounded-full object-cover" 
-                                    src="{% if request.user.profile_image %}{{ request.user.profile_image.url }}{% else %}/media/profile_images/default.png{% endif %}" 
-                                    alt="avatar"/>
-                            </button>
-                        </a>
-                    </li>
-                    <li style="margin:  17px 0 6px 0;"><a href="{% url 'sign-out' %}" class="bg-gray-100 text-teal-500 px-4 py-2 rounded hover:bg-white">Logout</a></li>
-                {% else %}
-                    <li><a href="{% url 'event_list' %}" class="hover:underline block">All Events</a></li>
-                    <li><a href="{% url 'contact' %}" class="hover:underline">Contact</a></li>
-                    <li style="margin-top: 17px;"><a href="{% url 'sign-in' %}" class="bg-gray-100 text-teal-500 px-4 py-2 rounded hover:bg-white">Login</a></li>
-                    <li style="margin: 20px 0 1px 0;"><a href="{% url 'sign-up' %}" class="bg-blue-950 text-white px-4 py-2 rounded hover:bg-blue-900">Sign Up</a></li>
-                {% endif %}
-            </ul>
-        </nav>
+              </a>
+            </li>
+            <li>
+              <a
+                href="{% url 'sign-out' %}"
+                class="bg-gray-100 text-teal-500 px-4 py-2 rounded hover:bg-white"
+                >Logout</a
+              >
+            </li>
+            {% else %}
+            <li>
+              <a href="{% url 'event_list' %}" class="hover:underline"
+                >All Events</a
+              >
+            </li>
+            <li>
+              <a href="{% url 'contact' %}" class="hover:underline">Contact</a>
+            </li>
+            <li>
+              <a
+                href="{% url 'sign-in' %}"
+                class="bg-gray-100 text-teal-500 px-4 py-2 rounded hover:bg-white"
+                >Login</a
+              >
+            </li>
+            <li>
+              <a
+                href="{% url 'sign-up' %}"
+                class="bg-blue-950 text-white px-4 py-2 rounded hover:bg-blue-900"
+                >Sign Up</a
+              >
+            </li>
+            {% endif %}
+          </ul>
+        </div>
+        <!-- Mobile Menu -->
+        <ul
+          id="mobile-menu"
+          class="lg:hidden hidden flex-col mt-4 space-y-2 bg-teal-600 p-4"
+        >
+          {% if user.is_authenticated %}
+          <li>
+            <a href="{% url 'dashboard' %}" class="hover:underline"
+              >Dashboard</a
+            >
+          </li>
+          <li>
+            <a href="{% url 'event_list' %}" class="hover:underline block"
+              >All Events</a
+            >
+          </li>
+          <li>
+            <a href="{% url 'contact' %}" class="hover:underline">Contact</a>
+          </li>
+          <li>
+            <a href="{% url 'profile' %}" class="hover:underline">Profile </a>
+          </li>
+          <li>
+            <a href="{% url 'profile' %}">
+              <button
+                id="user-menu-button"
+                class="flex items-center focus:outline-none hover:bg-teal-600 transition duration-300 ease-in-out focus:ring-2 focus:ring-teal-400 focus:ring-opacity-50"
+              >
+                <img
+                  class="h-8 w-8 rounded-full object-cover"
+                  src="{% if request.user.profile_image %}{{ request.user.profile_image.url }}{% else %}/media/profile_images/default.png{% endif %}"
+                  alt="avatar"
+                />
+              </button>
+            </a>
+          </li>
+          <li style="margin-left: 20px">
+            <a
+              href="{% url 'sign-out' %}"
+              class="bg-gray-100 text-teal-500 px-4 py-2 rounded hover:bg-white"
+              >Logout</a
+            >
+          </li>
+          {% else %}
+          <li>
+            <a href="{% url 'event_list' %}" class="hover:underline block"
+              >All Events</a
+            >
+          </li>
+          <li>
+            <a href="{% url 'contact' %}" class="hover:underline">Contact</a>
+          </li>
+          <li style="margin-top: 17px">
+            <a
+              href="{% url 'sign-in' %}"
+              class="bg-gray-100 text-teal-500 px-4 py-2 rounded hover:bg-white"
+              >Login</a
+            >
+          </li>
+          <li style="margin: 20px 0 1px 0">
+            <a
+              href="{% url 'sign-up' %}"
+              class="bg-blue-950 text-white px-4 py-2 rounded hover:bg-blue-900"
+              >Sign Up</a
+            >
+          </li>
+          {% endif %}
+        </ul>
+      </nav>
     </header>
 
     <div class="container mx-auto py-6">
-        {% if messages %}
-            <div class="p-4">
-                {% for message in messages %}
-                    <div class="bg-blue-900 text-white p-3 rounded">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            </div>
-        {% endif %}
-
-        {% block content %}
-        <!-- Content will be inserted here from child templates -->
-        {% endblock %}
+      {% if messages %}
+      <div class="p-4">
+        {% for message in messages %}
+        <div class="bg-blue-900 text-white p-3 rounded">{{ message }}</div>
+        {% endfor %}
+      </div>
+      {% endif %} {% block content %}
+      <!-- Content will be inserted here from child templates -->
+      {% endblock %}
     </div>
 
     <footer class="bg-teal-500 text-white text-center p-4">
-        <p>&copy; 2025 Event Bangla. All rights reserved.</p>
+      <p>&copy; 2025 Event Bangla. All rights reserved.</p>
     </footer>
 
     <!-- JavaScript for Responsive Menu -->
     <script>
-        const menuBtn = document.getElementById('menu-btn');
-        const mobileMenu = document.getElementById('mobile-menu');
+      const menuBtn = document.getElementById("menu-btn");
+      const mobileMenu = document.getElementById("mobile-menu");
 
-        menuBtn.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-        });
+      menuBtn.addEventListener("click", () => {
+        mobileMenu.classList.toggle("hidden");
+      });
     </script>
-</body>
+  </body>
 </html>
