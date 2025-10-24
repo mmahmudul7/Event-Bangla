@@ -56,21 +56,21 @@
                         View Details
                     </a>
 
-                    <!-- RSVP Button -->
+                    <!-- Booking Button -->
                     <div class="flex justify-between items-center mt-4">
                         {% if user.is_authenticated %}
                             {% if user in event.participants.all %}
                                 <button class="bg-gray-300 text-white px-4 py-2 rounded cursor-not-allowed" disabled>
-                                    RSVP Done
+                                    Booking Done
                                 </button>
                             {% else %}
                                 <a href="{% url 'event_rsvp' event.id %}" class="bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-700 transition">
-                                    RSVP Now
+                                    Purchase Ticket
                                 </a>
                             {% endif %}
                         {% else %}
                             <a href="{% url 'sign-in' %}" class="bg-blue-900 text-white px-4 py-2 rounded hover:bg-blue-950 transition">
-                                Login to RSVP!
+                                Purchase Ticket!
                             </a>
                         {% endif %}
                     </div>
